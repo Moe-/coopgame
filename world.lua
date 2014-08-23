@@ -98,13 +98,13 @@ function World:update(dt)
     v:update(dt)
   end
   
-  for i,v in pairs(self.shots) do
-    v[1] = v[1] + 20 * dt * v[3]
-    v[2] = v[2] + 20 * dt * v[4]
-    if v[1] < 0 or v[1] > self.width or v[2] < 0 or v[2] > self.height then
-      self.shots[i] = nil
-    end
-  end
+--  for i,v in pairs(self.shots) do
+--    v[1] = v[1] + 20 * dt * v[3]
+--    v[2] = v[2] + 20 * dt * v[4]
+--    if v[1] < 0 or v[1] > self.width or v[2] < 0 or v[2] > self.height then
+--      self.shots[i] = nil
+--    end
+--  end
   
   if love.mouse.isDown("l") and self.nextMouseEvent <= 0 then
     self.nextMouseEvent = 0.02
@@ -113,14 +113,19 @@ function World:update(dt)
     local dx = mousex - (-self.player.x + love.window.getWidth()/2) - posx
     local dy = mousey - (-self.player.y + love.window.getHeight()/2) - posy
     local length = math.sqrt(dx*dx, dy*dy)
-    table.insert(self.shots, {posx, posy, dx/length, dy/length})
+    --table.insert(self.shots, {posx, posy, dx/length, dy/length})
+    local body = love.physics.newBody( self.physWorld.pWorld, posx, posy, 'dynamic')
+    table.insert(self.shots, body)
+    body:setBullet(true)
+    body:setLinearDamping(0)
+    body:setLinearVelocity(50 * dx/length, 50 * dy/length)
   end
 
   self.nextMouseEvent = self.nextMouseEvent - dt
 end
 
 function World:draw()
-  self.camera:setCamera();
+  self.camera:setCamera()
 
   love.graphics.draw(self.backgroundImg, self.backgroundQuad, 0, 0)
   love.graphics.rectangle("fill", targetPoint[1] - 10, targetPoint[2] - 50, 20, 100)
@@ -138,7 +143,9 @@ function World:draw()
   end
   
   for i,v in pairs(self.shots) do
-    love.graphics.line(v[1], v[2], v[1] + 5 * v[3], v[2] + 5 * v[4])
+    local x, y = v:getPosition()
+    local dx, dy = v:getLinearVelocity()
+    love.graphics.line(x, y, x + 5 * dx, y + 5 * dy)
   end
   
   self.player:draw()
