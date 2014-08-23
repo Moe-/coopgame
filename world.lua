@@ -94,7 +94,7 @@ function World:update(dt)
 end
 
 function World:draw()
-  --self.camera:setCamera();
+  self.camera:setCamera();
 
   love.graphics.draw(self.backgroundImg, self.backgroundQuad, 0, 0)
   
@@ -112,5 +112,5 @@ function World:draw()
   
   self.player:draw()
 
-  --self.camera:unsetCamera()
+  self.camera:unsetCamera()
 end
