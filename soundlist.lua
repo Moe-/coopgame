@@ -19,6 +19,9 @@ function Soundlist:__init()
     -- sound = love.audio.newSource("sound.wav","static")
     --, -- next file here
 
+	menu_mouseover_01  = love.audio.newSource("audio/menu_mouseover_01.wav", "static"),
+	menu_mouseover_02  = love.audio.newSource("audio/menu_mouseover_02.wav", "static"),
+
 	vehicle_explode_01 = love.audio.newSource("audio/vehicle_explode_01.wav", "static"),
 	vehicle_explode_02 = love.audio.newSource("audio/vehicle_explode_02.wav", "static"),
 	vehicle_explode_03 = love.audio.newSource("audio/vehicle_explode_03.wav", "static"),
