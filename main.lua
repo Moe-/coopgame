@@ -1,15 +1,23 @@
 require('utils')
+require('world')
+require('vehicle')
+
+gWorld = nil
+
+function createWorld()
+  gWorld = World:new(2048, 2048)
+end
 
 function love.load()
-
+    createWorld()
 end
 
 function love.update(dt)
-
+  gWorld:update(dt)
 end
 
 function love.draw()
-  love.graphics.print('Hello World!', 400, 300)
+  gWorld:draw()
 end
 
 function love.keypressed(key, unicode)
