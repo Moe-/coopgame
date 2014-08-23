@@ -1,3 +1,4 @@
+require('physics')
 class "World" {
 	width = 10;
   height = 10;
@@ -6,6 +7,7 @@ class "World" {
   undestroyables = {};
   destroyables = {};
   enemies = {};
+  physWorld = nil;
 }
 
 function World:__init(width, height)
@@ -18,8 +20,12 @@ function World:__init(width, height)
   
   self.enemyImg = love.graphics.newImage('gfx/enemy.png')
   
+  self.physWorld = Physics:new()
+  
   self:generateObjects(5, 10)
-  self.player = Vehicle:new(20, 20)
+  self.player = Vehicle:new(self.physWorld.pWorld, 200, 200, 10, 10, nil)
+  
+  self.physWorld:addObject(self.player)
 end
 
 function World:generateObjects(countX, countY)
@@ -69,7 +75,7 @@ end
 
 function World:update(dt)
   self.player:update(dt)
-  
+  self.physWorld:update(dt)
   for i, v in pairs(self.undestroyables) do
     v:update(dt)
   end
