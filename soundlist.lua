@@ -15,6 +15,11 @@ function Soundlist:__init()
     ----example:
     -- sound = love.audio.newSource("sound.wav","static")
     --, -- next file here
+
+	vehicle_explode_01 = love.audio.newSource("audio/vehicle_explode_01.wav", "static"),
+	vehicle_explode_02 = love.audio.newSource("audio/vehicle_explode_02.wav", "static"),
+	vehicle_explode_03 = love.audio.newSource("audio/vehicle_explode_03.wav", "static"),
+
   }
 end
 

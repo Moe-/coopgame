@@ -2,6 +2,9 @@ require('utils')
 require('world')
 require('vehicle')
 require('mainmenu')
+require('enemy')
+require('destroyable')
+require('undestroyable')
 
 gScreen = nil
 
@@ -11,6 +14,7 @@ end
 
 function love.load()
     createMainMenu()
+	math.randomseed( os.time() )
 end
 
 function love.update(dt)
