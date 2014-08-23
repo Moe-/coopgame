@@ -12,7 +12,8 @@ function createWorld()
 end
 
 function love.load()
-    createWorld()
+  math.randomseed( os.time() )
+  createWorld()
 end
 
 function love.update(dt)
