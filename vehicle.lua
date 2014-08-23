@@ -35,36 +35,47 @@ end
 
 function Vehicle:update(dt)
   self.udt = self.udt + dt
-  if self.udt>0.1 then
+  if self.udt>0.01 then
     self.udt = 0
 	  if love.keyboard.isDown("w") then
 		local vel = 10000
-		self.body:applyForce(math.sin(self.rot)*vel,math.cos(self.rot)*vel)
+		self.body:applyForce(-math.sin(self.rot)*vel,math.cos(self.rot)*vel)
+	  end
+	  if love.keyboard.isDown("s") then
+		local vel = 10000
+		self.body:applyForce(math.sin(self.rot)*vel,-math.cos(self.rot)*vel)
 	  end
 	  if love.keyboard.isDown("a") then
-		self.body:applyLinearImpulse(self.rotSpeed*1, 0, 10, 0)
-		--self.body:applyTorque(self.rotSpeed*0.01)
-		self.rot = self.body:getAngle()
+		self.body:applyForce(
+		-3*self.rotSpeed*math.cos(self.rot), --*math.pi/4,
+		-3*self.rotSpeed*math.sin(self.rot), --*math.pi/4,
+		self.x-math.cos(self.rot)*10,
+		self.y-math.sin(self.rot)*10)
+		--self.body:applyTorque(self.rotSpeed*0.1)
+		--self.rot = self.body:getAngle()
 		print(self.rot)
 	  end
 	  if love.keyboard.isDown("d") then
-		self.body:applyLinearImpulse(-1*self.rotSpeed*1, 0, 10, 0)
-		--self.body:applyTorque(-1*self.rotSpeed*0.01)
-		self.rot = self.body:getAngle()
+		self.body:applyForce(
+		3*self.rotSpeed*math.cos(self.rot), --*math.pi/4,
+		3*self.rotSpeed*math.sin(self.rot), --*math.pi/4,
+		self.x-2*math.cos(self.rot)*10,
+		self.y-2*math.sin(self.rot)*10)
+		--self.body:applyTorque(-1*self.rotSpeed*0.1)
 		print(self.rot)
 	  end
-	  
+	  self.rot = self.body:getAngle()
+	  --print(math.sin(self.rot)*1000 .. ", " .. math.cos(self.rot)*1000)
 	  self.x,self.y = self.body:getPosition()
-	  --print(self.x..","..self.y)
+	  print(self.x..","..self.y)
 	end
 end
 
 function Vehicle:updatePhysicsProperties()
-  if self.body then
-    self.body:setLinearDamping(self.damping)
-    self.fixture = love.physics.newFixture(self.body, self.shape, weight)
-	self.body:setInertia(0.001)
-  end
+  self.body:setLinearDamping(self.damping)
+  self.body:setAngularDamping(2)
+  self.fixture = love.physics.newFixture(self.body, self.shape, weight)
+  self.body:setInertia(3)
 end
 
 function Vehicle:draw()
