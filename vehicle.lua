@@ -1,6 +1,6 @@
 class "Vehicle" {
 	x = 0;
-  y = 0;
+	y = 0;
 }
 
 function Vehicle:__init(x, y)

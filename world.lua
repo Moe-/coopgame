@@ -1,3 +1,5 @@
+require('playercamera')
+
 class "World" {
 	width = 10;
   height = 10;
@@ -20,6 +22,8 @@ function World:__init(width, height)
   
   self:generateObjects(5, 10)
   self.player = Vehicle:new(20, 20)
+
+  self.camera = PlayerCamera:new(self.player)
 end
 
 function World:generateObjects(countX, countY)
@@ -84,6 +88,8 @@ function World:update(dt)
 end
 
 function World:draw()
+  self.camera:setCamera();
+
   love.graphics.draw(self.backgroundImg, self.backgroundQuad, 0, 0)
   
   for i, v in pairs(self.undestroyables) do
@@ -99,4 +105,6 @@ function World:draw()
   end
   
   self.player:draw()
+
+  self.camera:unsetCamera()
 end

@@ -93,6 +93,7 @@ function MainMenu:update(dt)
 end
 
 function MainMenu:draw()
+	-- check if screen size has changed
 	if self.screenwidth ~= love.window.getWidth() or
 		self.screenheight ~= love.window.getHeight() then
 		self.screenwidth = love.window.getWidth()
