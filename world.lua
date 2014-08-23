@@ -9,7 +9,9 @@ class "World" {
   undestroyables = {};
   destroyables = {};
   enemies = {};
+  shots = {};
   physWorld = nil;
+  nextMouseEvent = 0;
 }
 
 function World:__init(width, height)
@@ -95,6 +97,26 @@ function World:update(dt)
   for i, v in pairs(self.enemies) do
     v:update(dt)
   end
+  
+  for i,v in pairs(self.shots) do
+    v[1] = v[1] + 20 * dt * v[3]
+    v[2] = v[2] + 20 * dt * v[4]
+    if v[1] < 0 or v[1] > self.width or v[2] < 0 or v[2] > self.height then
+      self.shots[i] = nil
+    end
+  end
+  
+  if love.mouse.isDown("l") and self.nextMouseEvent <= 0 then
+    self.nextMouseEvent = 0.02
+    local mousex, mousey = love.mouse.getPosition()
+    local posx, posy = self.player:getCanonPosition()
+    local dx = mousex - (-self.player.x + love.window.getWidth()/2) - posx
+    local dy = mousey - (-self.player.y + love.window.getHeight()/2) - posy
+    local length = math.sqrt(dx*dx, dy*dy)
+    table.insert(self.shots, {posx, posy, dx/length, dy/length})
+  end
+
+  self.nextMouseEvent = self.nextMouseEvent - dt
 end
 
 function World:draw()
@@ -113,6 +135,10 @@ function World:draw()
   
   for i, v in pairs(self.enemies) do
     v:draw()
+  end
+  
+  for i,v in pairs(self.shots) do
+    love.graphics.line(v[1], v[2], v[1] + 5 * v[3], v[2] + 5 * v[4])
   end
   
   self.player:draw()
