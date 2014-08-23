@@ -9,6 +9,7 @@ function Soundlist:__init()
     --, -- next file here
 
 	music_main_theme = love.audio.newSource("audio/music_main_theme.ogg"),
+	music_menu_theme = love.audio.newSource("audio/music_menu_theme.ogg"),
   }
 
   self.soundEffects = {
