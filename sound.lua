@@ -23,10 +23,12 @@ end
 --------------- background music
 -- music functions: play, pause, resume, stop, change volume
 function Sound:playMusic(musicName, volume)
-		local m = self.soundlist:getMusic(musicName)
+	local m, v = self.soundlist:getMusic(musicName)
 	if m then
 		self:stopMusic("all")
-		if volume then 
+		if v then
+		  m:setVolume(v*self.volume)
+		elseif volume then 
 		  m:setVolume(volume*self.volume)
 		else
 		  m:setVolume(self.volume)
@@ -74,9 +76,13 @@ end
 --------------- sound effects
 -- sound effect functions: play, pause(+all), resume, stop(+all)
 function Sound:playSound(sound, volume, xCoord, yCoord, zCoord, forceRewind)
-	local s = self.soundlist:getSound(sound)
+
+	local s, v = self.soundlist:getSound(sound)
+
 	if s then
-		if volume then
+		if v then
+		  s:setVolume(v*self.volume)
+		elseif volume then
 		  s:setVolume(volume*self.volume)
 		else
 		  s:setVolume(self.volume)
