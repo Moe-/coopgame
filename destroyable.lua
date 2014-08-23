@@ -2,11 +2,18 @@ class "Destroyable" {
   
 }
 
-function Destroyable:__init(x, y, size, form)
+function Destroyable:__init(x, y, size, form, world)
   self.x = x
   self.y = y
   self.size = size
   self.form = form
+  self.body = love.physics.newBody(world, x + size/2, y + size/2, 'static')
+  if form == 1 then
+    self.shape = love.physics.newCircleShape(size)
+  else
+    self.shape = love.physics.newRectangleShape(x, y, size, size)
+  end
+  self.fixture = love.physics.newFixture(self.body, self.shape, 100)
 end
 
 function Destroyable:update(dt)

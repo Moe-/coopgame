@@ -49,7 +49,7 @@ function World:generateObjects(countX, countY)
       local xCoord = math.random((x - 1) * secWidth + size, x * secWidth - size)
       local yCoord = math.random((y - 1) * secHeight + size, y * secHeight - size)
 
-      table.insert(self.undestroyables, Undestroyable:new(xCoord, yCoord, size, math.random(1, 2)))
+      table.insert(self.undestroyables, Undestroyable:new(xCoord, yCoord, size, math.random(1, 2), self.physWorld.pWorld))
       self:generateDestroyableObjects((x - 1) * secWidth, (y - 1) * secHeight, secWidth, (secHeight - size) / 2)
       self:generateDestroyableObjects((x - 1) * secWidth, y * secHeight - (secHeight - size) / 2, secWidth, (secHeight - size) / 2)
       
@@ -71,13 +71,13 @@ function World:generateDestroyableObjects(posx, posy, width, height)
       if toInsert < 0.15 then
         local xCoord = math.random(posx + (x - 1) * secWidth, posx + x * secWidth)
         local yCoord = math.random(posy + (y - 1) * secHeight, posy + y * secHeight)
-        table.insert(self.enemies, Enemy:new(xCoord, yCoord, self.enemyImg))
+        table.insert(self.enemies, Enemy:new(xCoord, yCoord, self.enemyImg, self.physWorld.pWorld))
       elseif toInsert < 0.4 then
         local size = math.random(5, maxSize)
         local xCoord = math.random(posx + (x - 1) * secWidth + size, posx + x * secWidth - size)
         local yCoord = math.random(posy + (y - 1) * secHeight + size, posy + y * secHeight - size)
 
-        table.insert(self.destroyables, Destroyable:new(xCoord, yCoord, size, math.random(1, 2)))
+        table.insert(self.destroyables, Destroyable:new(xCoord, yCoord, size, math.random(1, 2), self.physWorld.pWorld))
       end
     end
   end   
