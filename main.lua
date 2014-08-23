@@ -1,6 +1,9 @@
 require('utils')
 require('world')
 require('vehicle')
+require('enemy')
+require('destroyable')
+require('undestroyable')
 
 gWorld = nil
 
