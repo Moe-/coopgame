@@ -79,12 +79,25 @@ function Vehicle:updatePhysicsProperties()
 end
 
 function Vehicle:draw()
-  love.graphics.draw(self.vehicle, self.x, self.y, self.rot, 1, 1, self.vehicle:getWidth()/2, self.vehicle:getHeight()/2)
-  
-  local x, y = love.mouse.getPosition()
-  local r = math.atan2(x -self.x, self.y - y)
+	love.graphics.push()
+	love.graphics.translate(self.x, self.y)
+	love.graphics.rotate(self.rot)
+	love.graphics.translate(-self.vehicle:getWidth()/2, -self.vehicle:getHeight()/2)
+	
+	local x, y = love.mouse.getPosition()
+	local r = math.atan2(x -self.x, self.y - y)
 
-  love.graphics.draw(self.tower, self.x - self.vehicle:getWidth()/2 + self.offsetGunX, self.y - self.vehicle:getHeight()/2 + self.offsetGunY, r, 1, 1, self.tower:getWidth() / 2, self.tower:getHeight() / 2)
+	love.graphics.draw(self.vehicle, 0, 0)
+	love.graphics.draw(self.tower, 0, 0)
+  --love.graphics.draw(self.vehicle, self.x, self.y, self.rot, 1, 1, self.vehicle:getWidth()/2, self.vehicle:getHeight()/2)
+  
+  --local x, y = love.mouse.getPosition()
+  --local r = math.atan2(x -self.x, self.y - y)
+
+  --love.graphics.draw(self.tower, self.x - self.vehicle:getWidth()/2 + self.offsetGunX, self.y - self.vehicle:getHeight()/2 + self.offsetGunY, r, 1, 1, self.tower:getWidth() / 2, self.tower:getHeight() / 2)
+  --love.graphics.draw(self.tower, self.x - self.vehicle:getWidth()/2, self.y, 0, 1, 1, )
+
+	love.graphics.pop()
 end
 
 function Vehicle:getCanonPosition()
