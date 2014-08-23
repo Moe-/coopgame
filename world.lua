@@ -26,13 +26,17 @@ function World:__init(width, height)
   
   self:generateObjects(5, 10)
 
-  self.player = Vehicle:new(self.physWorld.pWorld, 200, 200, 10, 10, nil)
+  self.player = Vehicle:new(self.physWorld.pWorld, startPoint[1], startPoint[2], 10, 10, nil)
+  
   self.physWorld:addObject(self.player)
 
   self.camera = PlayerCamera:new(self.player)
 end
 
 function World:generateObjects(countX, countY)
+  startPoint = {0.05 * math.random() * self.width, math.random() * self.height}
+  targetPoint = {(1.0 - 0.05 * math.random()) * self.width, math.random() * self.height}
+  
   local minSize = 5
   local secWidth = self.width/countX
   local secHeight = self.height/countY
@@ -47,8 +51,8 @@ function World:generateObjects(countX, countY)
       self:generateDestroyableObjects((x - 1) * secWidth, (y - 1) * secHeight, secWidth, (secHeight - size) / 2)
       self:generateDestroyableObjects((x - 1) * secWidth, y * secHeight - (secHeight - size) / 2, secWidth, (secHeight - size) / 2)
       
-      self:generateDestroyableObjects((x - 1) * secWidth, y * secHeight - (secHeight - size) / 2, (secWidth - size) / 2, (secHeight - size) / 2)
-      self:generateDestroyableObjects((x - 1) * secWidth, (y - 1) * secHeight + (secHeight - size) / 2, (secWidth - size) / 2, (secHeight - size) / 2)
+      self:generateDestroyableObjects((x - 1) * secWidth, (y - 1) * secHeight + (secHeight - size) / 2, (secWidth - size) / 2, size)
+      self:generateDestroyableObjects(x * secWidth - (secWidth - size) / 2, (y - 1) * secHeight + (secHeight - size) / 2, (secWidth - size) / 2, size)
     end
   end
 end
@@ -58,7 +62,7 @@ function World:generateDestroyableObjects(posx, posy, width, height)
   local ySecs = math.random(1, 3)
   local secWidth = width/xSecs
   local secHeight = height/ySecs
-  local maxSize = math.min(secWidth, secHeight)
+  local maxSize = math.min(secWidth, secHeight) / 2
   for x = 1, xSecs do
     for y = 1, ySecs do
       local toInsert = math.random()
@@ -97,6 +101,7 @@ function World:draw()
   --self.camera:setCamera();
 
   love.graphics.draw(self.backgroundImg, self.backgroundQuad, 0, 0)
+  love.graphics.rectangle("fill", targetPoint[1] - 10, targetPoint[2] - 50, 20, 100)
   
   for i, v in pairs(self.undestroyables) do
     v:draw()
