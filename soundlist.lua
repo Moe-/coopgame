@@ -7,6 +7,9 @@ function Soundlist:__init()
     -- music1 = love.audio.newSource("music.ogg")
     --music_main = love.audio.newSource("audio/music_main.ogg")
     --, -- next file here
+
+	music_main_theme = love.audio.newSource("audio/music_main_theme.ogg"),
+	music_menu_theme = love.audio.newSource("audio/music_menu_theme.ogg"),
   }
 
   self.soundEffects = {
@@ -15,6 +18,11 @@ function Soundlist:__init()
     ----example:
     -- sound = love.audio.newSource("sound.wav","static")
     --, -- next file here
+
+	menu_mouseover_01  = love.audio.newSource("audio/menu_mouseover_01.wav", "static"),
+	menu_mouseover_02  = love.audio.newSource("audio/menu_mouseover_02.wav", "static"),
+
+	menu_startgame     = love.audio.newSource("audio/menu_startgame.wav", "static"), 
 
 	vehicle_explode_01 = love.audio.newSource("audio/vehicle_explode_01.wav", "static"),
 	vehicle_explode_02 = love.audio.newSource("audio/vehicle_explode_02.wav", "static"),

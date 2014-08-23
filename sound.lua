@@ -10,10 +10,15 @@ require('soundlist')
 --]]
 class "Sound" {
 	parent = nil;
+	volume = 1;
 }
 
 function Sound:__init()
   self.soundlist = Soundlist:new()
+end
+
+function Sound:globalValue(val)
+  self.volume = val
 end
 --------------- background music
 -- music functions: play, pause, resume, stop, change volume
@@ -21,7 +26,11 @@ function Sound:playMusic(musicName, volume)
 		local m = self.soundlist:getMusic(musicName)
 	if m then
 		self:stopMusic("all")
-		m:setVolume(volume)
+		if volume then 
+		  m:setVolume(volume*self.volume)
+		else
+		  m:setVolume(self.volume)
+		end
 		m:play()
     m:setLooping(true)
   else
@@ -67,7 +76,11 @@ end
 function Sound:playSound(sound, volume, xCoord, yCoord, zCoord, forceRewind)
 	local s = self.soundlist:getSound(sound)
 	if s then
-		s:setVolume(volume)
+		if volume then
+		  s:setVolume(volume*self.volume)
+		else
+		  s:setVolume(self.volume)
+		end
 		s:setPosition(xCoord or 0,yCoord or 0,zCoord or 0)
 		s:play()
     if forceRewind then

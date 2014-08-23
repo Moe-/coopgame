@@ -1,4 +1,5 @@
 require('playercamera')
+require('physics')
 
 class "World" {
 	width = 10;
@@ -8,6 +9,7 @@ class "World" {
   undestroyables = {};
   destroyables = {};
   enemies = {};
+  physWorld = nil;
 }
 
 function World:__init(width, height)
@@ -20,8 +22,12 @@ function World:__init(width, height)
   
   self.enemyImg = love.graphics.newImage('gfx/enemy.png')
   
+  self.physWorld = Physics:new()
+  
   self:generateObjects(5, 10)
-  self.player = Vehicle:new(20, 20)
+
+  self.player = Vehicle:new(self.physWorld.pWorld, 200, 200, 10, 10, nil)
+  self.physWorld:addObject(self.player)
 
   self.camera = PlayerCamera:new(self.player)
 end
@@ -73,7 +79,7 @@ end
 
 function World:update(dt)
   self.player:update(dt)
-  
+  self.physWorld:update(dt)
   for i, v in pairs(self.undestroyables) do
     v:update(dt)
   end
@@ -88,7 +94,7 @@ function World:update(dt)
 end
 
 function World:draw()
-  self.camera:setCamera();
+  --self.camera:setCamera();
 
   love.graphics.draw(self.backgroundImg, self.backgroundQuad, 0, 0)
   
@@ -106,5 +112,5 @@ function World:draw()
   
   self.player:draw()
 
-  self.camera:unsetCamera()
+  --self.camera:unsetCamera()
 end
