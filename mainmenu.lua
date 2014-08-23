@@ -75,7 +75,7 @@ class "MainMenu" {
 function MainMenu:__init()
 
 	gSound = Sound:new()
-	gSound:playMusic("music_menu_theme", 100)
+	gSound:playMusic("music_menu_theme", nil)
 
 	self.font = love.graphics.newFont("gfx/DejaVuSans.ttf", 55)
 
@@ -85,9 +85,9 @@ function MainMenu:__init()
 
 	function self.playbutton:onClick()
 
-		gSound:playSound("menu_startgame", 100, 0, 0, 0, true)
+		gSound:playSound("menu_startgame", nil, 0, 0, 0, true)
 		gSound:stopMusic("music_menu_theme")
-		gSound:playMusic("music_main_theme", 100)
+		gSound:playMusic("music_main_theme", nil)
 
 		gScreen = World:new(2048, 2048)
 	end
