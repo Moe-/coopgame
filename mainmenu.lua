@@ -1,4 +1,5 @@
 require('utils')
+require('sound')
 
 class "MMButton" {
 	text = "";
@@ -72,12 +73,22 @@ class "MainMenu" {
 }
 
 function MainMenu:__init()
+
+	gSound = Sound:new()
+	gSound:playMusic("music_menu_theme", 100)
+
 	self.font = love.graphics.newFont("gfx/DejaVuSans.ttf", 55)
 
 	self.logoimg = love.graphics.newImage("gfx/logo.png")
 
 	self.playbutton = MMButton:new("Spielen", self.font, 0, 0)
+
 	function self.playbutton:onClick()
+
+		gSound:playSound("menu_startgame", 100, 0, 0, 0, true)
+		gSound:stopMusic("music_menu_theme")
+		gSound:playMusic("music_main_theme", 100)
+
 		gScreen = World:new(2048, 2048)
 	end
 
