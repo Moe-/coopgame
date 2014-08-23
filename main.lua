@@ -1,23 +1,24 @@
 require('utils')
 require('world')
 require('vehicle')
+require('mainmenu')
 
-gWorld = nil
+gScreen = nil
 
-function createWorld()
-  gWorld = World:new(2048, 2048)
+function createMainMenu()
+	gScreen = MainMenu:new()
 end
 
 function love.load()
-    createWorld()
+    createMainMenu()
 end
 
 function love.update(dt)
-  gWorld:update(dt)
+  gScreen:update(dt)
 end
 
 function love.draw()
-  gWorld:draw()
+  gScreen:draw()
 end
 
 function love.keypressed(key, unicode)

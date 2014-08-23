@@ -30,3 +30,8 @@ function class(name)
    _G[name] = newclass
    return setmetatable(newclass, {__index = mt_class, __call = define})
 end
+
+
+function lerp(v0, v1, t)
+	return v0 + t*(v1-v0)
+end
