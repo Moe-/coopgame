@@ -97,12 +97,8 @@ function Vehicle:draw()
   --love.graphics.draw(self.tower, self.x - self.vehicle:getWidth()/2 + self.offsetGunX, self.y - self.vehicle:getHeight()/2 + self.offsetGunY, r, 1, 1, self.tower:getWidth() / 2, self.tower:getHeight() / 2)
   --love.graphics.draw(self.tower, self.x - self.vehicle:getWidth()/2, self.y, 0, 1, 1, )
 
-  love.graphics.draw(self.tower, self.x - self.vehicle:getWidth()/2 + self.offsetGunX, self.y - self.vehicle:getHeight()/2 + self.offsetGunY, r, 1, 1, self.tower:getWidth() / 2, self.tower:getHeight() / 2)
+  --love.graphics.draw(self.tower, self.x - self.vehicle:getWidth()/2 + self.offsetGunX, self.y - self.vehicle:getHeight()/2 + self.offsetGunY, r, 1, 1, self.tower:getWidth() / 2, self.tower:getHeight() / 2)
   
-  local topLeftX, topLeftY, bottomRightX, bottomRightY = self.fixture:getBoundingBox(1)
-  love.graphics.setColor(255, 192, 255, 255)
-  love.graphics.rectangle("line", topLeftX, topLeftY, bottomRightX - topLeftX, bottomRightY - topLeftY)
-  love.graphics.setColor(255, 255, 255, 255)
 	love.graphics.pop()
 end
 

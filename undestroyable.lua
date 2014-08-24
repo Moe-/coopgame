@@ -29,9 +29,5 @@ function Undestroyable:draw()
      love.graphics.rectangle("fill", self.x - self.size/2, self.y - self.size/2, self.size, self.size)
   end
   
-  local topLeftX, topLeftY, bottomRightX, bottomRightY = self.fixture:getBoundingBox(1)
-  love.graphics.setColor(128, 192, 64, 255)
-  love.graphics.rectangle("line", topLeftX, topLeftY, bottomRightX - topLeftX, bottomRightY - topLeftY)
-  
   love.graphics.setColor(255, 255, 255, 255)
 end
