@@ -1,5 +1,7 @@
 class "PlayerDriver" {
 	vehicle = nil;
+
+	timetonextshot = 0;
 }
 
 function PlayerDriver:__init(vehicle)
@@ -28,4 +30,12 @@ function PlayerDriver:update(dt)
 	local r = math.atan2(x - love.window.getWidth()/2, love.window.getHeight()/2 - y)
 	
 	self.vehicle:setTowerRot(r)
+
+	if love.mouse.isDown("l") and self.timetonextshot <= 0 then
+		self.timetonextshot = 0.5
+    
+		self.vehicle:shoot()
+	end
+	
+	self.timetonextshot = self.timetonextshot - dt
 end

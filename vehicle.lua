@@ -12,6 +12,9 @@ class "Vehicle" {
   towerRot = 0;
   udt = 0;
   vel = 12500;
+  maxEnergy = 200;
+
+  world = nil;
 
   isAccelerating = false;
   isBraking = false;
@@ -24,6 +27,7 @@ class "Vehicle" {
 function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed, realWorld, fraction)
   self.x = x
   self.y = y
+  self.energy = self.maxEnergy
   -- physics:
   self.body = love.physics.newBody(physWorld, x, y, pType or "dynamic")
   self.body:setAngle(3*math.pi/2)
@@ -34,6 +38,8 @@ function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed, realW
   self.fixture = pFixture or love.physics.newFixture(self.body, self.shape, self.weight)
   self.fixture:setUserData({["name"] = "vehicle", ["reference"] = self, ["world"] = realWorld})
   self.fixture:setFilterData(PHYSICS_CATEGORY_VEHICLE, PHYSICS_MASK_VEHICLE, PHYSICS_GROUP_VEHICLE)
+
+  self.world = realWorld
   
   self:updatePhysicsProperties()
   -- !physics
@@ -106,6 +112,11 @@ function Vehicle:setTowerRot(rot)
 	self.towerRot = rot
 end
 
+function Vehicle:shoot()
+	local cx, cy = self:getCannonPosition()
+	self.world:addVehicleShot(cx, cy, self.towerRot - math.pi/2)
+end
+
 function Vehicle:updatePhysicsProperties()
   self.body:setLinearDamping(self.damping)
   self.body:setAngularDamping(2)
@@ -116,6 +127,14 @@ end
 function Vehicle:draw()
 	love.graphics.push()
 	love.graphics.translate(self.x, self.y)
+  
+  love.graphics.setColor(255, 0, 0, 192)
+  love.graphics.rectangle("fill", -self.vehicle:getWidth()/2 + 25, -self.vehicle:getHeight()/2 - 50, 100, 30 )
+  love.graphics.setColor(0, 255, 0, 192)
+  love.graphics.rectangle("fill", -self.vehicle:getWidth()/2 + 25, -self.vehicle:getHeight()/2 - 50, 100 * math.max(0, self.energy/self.maxEnergy), 30 )
+
+  love.graphics.setColor(255, 255, 255, 255)
+  
 	love.graphics.rotate(self.rot)
 	love.graphics.translate(-self.vehicle:getWidth()/2, -self.vehicle:getHeight()/2)
 
@@ -132,4 +151,15 @@ end
 function Vehicle:getCannonPosition()
   return self.towerLength * math.cos(self.towerRot - math.pi/2) + self.x, 
 			self.towerLength * math.sin(self.towerRot - math.pi/2) + self.y
+end
+
+function Vehicle:hit()
+  self.energy = self.energy - 10
+end
+
+function Vehicle:isDead()
+  if self.energy <= 0 then
+    return true
+  end
+  return false
 end
