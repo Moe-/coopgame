@@ -37,7 +37,7 @@ function World:__init(width, height)
   self.height = height
 
   -- NOTE: set gamerunning to true if you want skip the countdown
-  self.gamerunning = true
+  self.gamerunning = false
   -- this if query seems to be unnecessary, but it is used
   -- to skip the countdown
   if self.gamerunning == false then
