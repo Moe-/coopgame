@@ -2,7 +2,7 @@ class "Destroyable" {
   
 }
 
-function Destroyable:__init(x, y, size, form, world)
+function Destroyable:__init(x, y, size, form, world, realWorld)
   self.x = x
   self.y = y
   self.size = size
@@ -14,6 +14,7 @@ function Destroyable:__init(x, y, size, form, world)
     self.shape = love.physics.newRectangleShape(size, size)
   end
   self.fixture = love.physics.newFixture(self.body, self.shape, 100)
+  self.fixture:setUserData({["name"] = "destroyable", ["reference"] = self, ["world"] = realWorld})
 end
 
 function Destroyable:update(dt)
