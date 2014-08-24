@@ -11,16 +11,17 @@ class "Vehicle" {
   rot = 0;
   towerRot = 0;
   udt = 0;
+  vel = 12500;
 
   isAccelerating = false;
   isBraking = false;
   isTurningLeft = false;
   isTurningRight = false;
-  vel = 12500;
-  driver = nil;
+
+  fraction = nil;
 }
 
-function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed, realWorld)
+function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed, realWorld, fraction)
   self.x = x
   self.y = y
   -- physics:
@@ -42,9 +43,8 @@ function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed, realW
   -- NOTE: This is length of the tower from the rotation center
   -- when the tower image is changed, this value has to be adjusted
   self.towerLength = 128 - (64/2)
-  
-  self.offsetGunX = (self.vehicle:getWidth() - self.tower:getWidth()) / 2
-  self.offsetGunY = (self.vehicle:getHeight() - self.tower:getHeight()) / 2
+
+  self.fraction = fraction
 end
 
 function Vehicle:update(dt)
@@ -118,13 +118,14 @@ function Vehicle:draw()
 	love.graphics.translate(self.x, self.y)
 	love.graphics.rotate(self.rot)
 	love.graphics.translate(-self.vehicle:getWidth()/2, -self.vehicle:getHeight()/2)
-	
-	local x, y = love.mouse.getPosition()
-	local r = math.atan2(x -self.x, self.y - y)
 
 	love.graphics.draw(self.vehicle, 0, 0)
-	love.graphics.draw(self.tower, self.vehicle:getWidth()/2, self.vehicle:getHeight()/2, self.towerRot -self.rot, 1, 1, self.tower:getWidth()/2, self.towerLength)
 
+	local flag = self.fraction:getFlag()
+	love.graphics.draw(flag, self.vehicle:getWidth()/2 - flag:getWidth()/2, self.vehicle:getHeight()/2 - 75)
+
+	love.graphics.draw(self.tower, self.vehicle:getWidth()/2, self.vehicle:getHeight()/2, self.towerRot -self.rot, 1, 1, self.tower:getWidth()/2, self.towerLength)
+	
 	love.graphics.pop()
 end
 

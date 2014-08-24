@@ -1,17 +1,25 @@
 require('playercamera')
 require('physics')
 require('playerdriver')
+require('fraction')
 
 class "World" {
-	width = 10;
+  width = 10;
   height = 10;
+
   startPoint = {};
   targetPoint = {};
+
   undestroyables = {};
   destroyables = {};
   enemies = {};
+
   shots = {};
+
+  fractions = {};
+
   physWorld = nil;
+
   nextMouseEvent = 0;
 }
 
@@ -47,7 +55,12 @@ function World:__init(width, height)
   
   self:generateObjects(5, 5)
 
-  self.player = Vehicle:new(self.physWorld.pWorld, startPoint[1], startPoint[2], 10, 10, nil, nil, self)
+  self.fractions["green"] = Fraction:new(love.graphics.newImage("gfx/green_fraction.png"))
+  self.fractions["red"] = Fraction:new(love.graphics.newImage("gfx/red_fraction.png"))
+
+  print(self.fractions["red"]:getFlag())
+
+  self.player = Vehicle:new(self.physWorld.pWorld, startPoint[1], startPoint[2], 10, 10, nil, nil, self, self.fractions["green"])
   
   self.physWorld:addObject(self.player)
 
