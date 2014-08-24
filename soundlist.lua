@@ -22,7 +22,9 @@ function Soundlist:__init()
 	menu_mouseover_01  = { src = love.audio.newSource("audio/menu_mouseover_01.wav", "static"), vol = 1 },
 	menu_mouseover_02  = { src = love.audio.newSource("audio/menu_mouseover_02.wav", "static"), vol = 1 },
 
-	menu_startgame     = { src = love.audio.newSource("audio/menu_startgame.wav", "static"), vol = 0 }, 
+	menu_startgame     = { src = love.audio.newSource("audio/menu_startgame.wav", "static"), vol = 0 },
+
+	vehicle_drive      = { src = love.audio.newSource("audio/vehicle_drive.wav", "static"), vol = 1 },
 
 	vehicle_explode_01 = { src = love.audio.newSource("audio/vehicle_explode_01.wav", "static"), vol = 1 },
 	vehicle_explode_02 = { src = love.audio.newSource("audio/vehicle_explode_02.wav", "static"), vol = 1 },
