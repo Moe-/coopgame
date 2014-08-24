@@ -39,6 +39,9 @@ function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed, realW
   
   self.vehicle = love.graphics.newImage('gfx/player.png')
   self.tower = love.graphics.newImage('gfx/tower.png')
+  -- NOTE: This is length of the tower from the rotation center
+  -- when the tower image is cahnged, this value has to be adjust
+  self.towerLength = 128 - (64/2)
   
   self.offsetGunX = (self.vehicle:getWidth() - self.tower:getWidth()) / 2
   self.offsetGunY = (self.vehicle:getHeight() - self.tower:getHeight()) / 2
@@ -129,20 +132,12 @@ function Vehicle:draw()
 	local r = math.atan2(x -self.x, self.y - y)
 
 	love.graphics.draw(self.vehicle, 0, 0)
-	love.graphics.draw(self.tower, self.vehicle:getWidth()/2, self.vehicle:getHeight()/2, self.towerRot -self.rot, 1, 1, 64/2, 128-(64/2))
-  --love.graphics.draw(self.vehicle, self.x, self.y, self.rot, 1, 1, self.vehicle:getWidth()/2, self.vehicle:getHeight()/2)
-  
-  --local x, y = love.mouse.getPosition()
-  --local r = math.atan2(x -self.x, self.y - y)
+	love.graphics.draw(self.tower, self.vehicle:getWidth()/2, self.vehicle:getHeight()/2, self.towerRot -self.rot, 1, 1, self.tower:getWidth()/2, self.towerLength)
 
-  --love.graphics.draw(self.tower, self.x - self.vehicle:getWidth()/2 + self.offsetGunX, self.y - self.vehicle:getHeight()/2 + self.offsetGunY, r, 1, 1, self.tower:getWidth() / 2, self.tower:getHeight() / 2)
-  --love.graphics.draw(self.tower, self.x - self.vehicle:getWidth()/2, self.y, 0, 1, 1, )
-
-  --love.graphics.draw(self.tower, self.x - self.vehicle:getWidth()/2 + self.offsetGunX, self.y - self.vehicle:getHeight()/2 + self.offsetGunY, r, 1, 1, self.tower:getWidth() / 2, self.tower:getHeight() / 2)
-  
 	love.graphics.pop()
 end
 
-function Vehicle:getCanonPosition()
-  return self.x + self.offsetGunX, self.y + self.offsetGunY
+function Vehicle:getCannonPosition()
+  return self.towerLength * math.cos(self.towerRot) + self.x, 
+			self.towerLength * math.sin(self.towerRot) + self.y
 end
