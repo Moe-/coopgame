@@ -129,6 +129,6 @@ function Vehicle:draw()
 end
 
 function Vehicle:getCannonPosition()
-  return self.towerLength * math.cos(self.towerRot) + self.x, 
-			self.towerLength * math.sin(self.towerRot) + self.y
+  return self.towerLength * math.cos(self.towerRot - math.pi/2) + self.x, 
+			self.towerLength * math.sin(self.towerRot - math.pi/2) + self.y
 end
