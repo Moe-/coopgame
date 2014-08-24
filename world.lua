@@ -21,6 +21,9 @@ class "World" {
   fractions = {};
 
   physWorld = nil;
+  gameWon = false;
+  shaderTime = 0;
+  shaderDir = 1;
   
   gamerunning = false;
 
@@ -55,7 +58,6 @@ function World:__init(width, height)
   
   self.physWorld = Physics:new()
   
--- TODO: Fix level boundaries
   self.body = love.physics.newBody(self.physWorld.pWorld, 0, 0, 'static')
   local shape = love.physics.newEdgeShape( 0, 0, width, 0)
   local fixture = love.physics.newFixture(self.body, shape, 15)
@@ -89,6 +91,8 @@ function World:__init(width, height)
   self.camera = PlayerCamera:new(self.player)
 
   self.playerdriver = PlayerDriver:new(self.player)
+  
+  self:createShaders()
   self.playerdriver:enableInput()
 end
 
@@ -183,6 +187,15 @@ function World:update(dt)
 	
 	self.playerdriver:disableInput()
   end
+  
+  self.shaderTime = self.shaderTime + 0.0005 * self.shaderDir * dt
+  if self.shaderTime < 0 then
+    self.shaderTime = 0
+    self.shaderDir = 1
+  elseif self.shaderTime > 1 then
+    self.shaderTime = 1
+    self.shaderDir = -1
+  end
 end
 
 function World:draw()
@@ -191,13 +204,17 @@ function World:draw()
   love.graphics.draw(self.backgroundImg, self.backgroundQuad, 0, 0)
   love.graphics.rectangle("fill", self.targetPoint[1] - 10, self.targetPoint[2] - 50, 20, 100)
   
+  love.graphics.setShader(self.shaderUndestroyable)
   for i, v in pairs(self.undestroyables) do
     v:draw()
   end
   
+  love.graphics.setShader(self.shaderDestroyable)
+  self.shaderDestroyable:send("time", self.shaderTime)
   for i, v in pairs(self.destroyables) do
     v:draw()
   end
+  love.graphics.setShader()
   
   for i, v in pairs(self.enemies) do
     v:draw()
@@ -307,4 +324,49 @@ end
 
 function World:collideWallVehicle(wall, vehicle, coll)
   vehicle:applyLinearImpulse(coll:getNormal())
+end
+
+function World:createShaders()
+  local pixelcodeDestroyable = [[
+    varying vec4 colour;
+    extern number time;
+    vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
+    {
+      vec4 texcolor = vec4(0.5 + 0.5 * cos(1.0 - time * (sqrt(colour.yxy * colour.yxy))), 1.0);
+      return vec4((texcolor.grba * color).rgb, 1.0);
+    }
+  ]]
+
+  local vertexcodeDestroyable = [[
+    varying vec4 colour;
+    vec4 position(mat4 transform_projection, vec4 vertex_position)
+    {
+      vec4 res = transform_projection * vertex_position;
+      colour = vertex_position;
+      return res;
+    }
+  ]]
+
+  self.shaderDestroyable = love.graphics.newShader(pixelcodeDestroyable, vertexcodeDestroyable)
+  
+  local pixelcodeUndestroyable = [[
+    varying vec4 colour;
+    vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
+    {
+      vec4 texcolor = vec4(0.5 + 0.5 * sin(1.0 - (sqrt(colour.xyx * colour.xyx))), 1.0);
+      return vec4((texcolor * color).rgb, 1.0);
+    }
+  ]]
+
+  local vertexcodeUndestroyable = [[
+    varying vec4 colour;
+    vec4 position(mat4 transform_projection, vec4 vertex_position)
+    {
+      vec4 res = transform_projection * vertex_position;
+      colour = res;
+      return res;
+    }
+  ]]
+
+  self.shaderUndestroyable = love.graphics.newShader(pixelcodeUndestroyable, vertexcodeUndestroyable)
 end
