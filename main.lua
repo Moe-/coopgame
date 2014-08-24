@@ -9,6 +9,7 @@ require('undestroyable')
 require('particle')
 
 gScreen = nil
+gFont = love.graphics.newFont("gfx/DejaVuSans.ttf", 65)
 
 function createMainMenu()
 	gScreen = MainMenu:new()

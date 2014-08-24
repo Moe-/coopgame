@@ -76,12 +76,9 @@ function MainMenu:__init()
 
 	gSound = Sound:new()
 	gSound:playMusic("music_menu_theme", nil)
-
-	self.font = love.graphics.newFont("gfx/DejaVuSans.ttf", 55)
-
 	self.logoimg = love.graphics.newImage("gfx/logo.png")
 
-	self.playbutton = MMButton:new("Spielen", self.font, 0, 0)
+	self.playbutton = MMButton:new("Spielen", gFont, 0, 0)
 
 	function self.playbutton:onClick()
 
@@ -92,7 +89,7 @@ function MainMenu:__init()
 		gScreen = World:new(2048, 2048)
 	end
 
-	self.quitbutton = MMButton:new("Beenden", self.font, 0, 0)
+	self.quitbutton = MMButton:new("Beenden", gFont, 0, 0)
 	function self.quitbutton:onClick()
 		love.event.quit()
 	end
@@ -125,7 +122,7 @@ function MainMenu:regenerate(width, height)
 	local halfwidth = width/2
 
 	local padding = 10
-	local fontheight = self.font:getHeight()
+	local fontheight = gFont:getHeight()
 
 	self.playbutton.x = halfwidth
 	self.playbutton.y = halfheight
