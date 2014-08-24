@@ -139,5 +139,6 @@ function Enemy:kill()
 end
 
 function Enemy:destroy()
+  gSound:playSound('enemy_death', 1, x, y, 0, true)
   self.body:destroy()
 end

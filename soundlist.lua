@@ -8,8 +8,8 @@ function Soundlist:__init()
     --music_main = { src = love.audio.newSource("audio/music_main.ogg"), vol = 1 }
     --, -- next file here
 
-	music_main_theme = { src = love.audio.newSource("audio/music_main_theme.ogg"), vol = 0 },
-	music_menu_theme = { src = love.audio.newSource("audio/music_menu_theme.ogg"), vol = 0 },
+	music_main_theme = { src = love.audio.newSource("audio/music_main_theme.ogg"), vol = 1 },
+	music_menu_theme = { src = love.audio.newSource("audio/music_menu_theme.ogg"), vol = 1 },
   }
 
   self.soundEffects = {
@@ -22,7 +22,7 @@ function Soundlist:__init()
 	menu_mouseover_01  = { src = love.audio.newSource("audio/menu_mouseover_01.wav", "static"), vol = 1 },
 	menu_mouseover_02  = { src = love.audio.newSource("audio/menu_mouseover_02.wav", "static"), vol = 1 },
 
-	menu_startgame     = { src = love.audio.newSource("audio/menu_startgame.wav", "static"), vol = 0 },
+	menu_startgame     = { src = love.audio.newSource("audio/menu_startgame.wav", "static"), vol = 1 },
 
 	vehicle_drive      = { src = love.audio.newSource("audio/vehicle_drive.wav", "static"), vol = 1 },
 
@@ -35,8 +35,10 @@ function Soundlist:__init()
 	vehicle_explode_03 = { src = love.audio.newSource("audio/vehicle_explode_03.wav", "static"), vol = 1 },
 
 	enemy_shoot_01     = { src = love.audio.newSource("audio/enemy_shoot_01.wav", "static"), vol = 1 },
-	enemy_shoot_02     = { src = love.audio.newSource("audio/enemy_shoot_02.wav", "static"), vol = 2 },
-	enemy_shoot_03     = { src = love.audio.newSource("audio/enemy_shoot_03.wav", "static"), vol = 3 },
+	enemy_shoot_02     = { src = love.audio.newSource("audio/enemy_shoot_02.wav", "static"), vol = 1 },
+	enemy_shoot_03     = { src = love.audio.newSource("audio/enemy_shoot_03.wav", "static"), vol = 1 },
+
+	enemy_death        = { src = love.audio.newSource("audio/enemy_death.wav", "static"), vol = 1 },
   }
 end
 

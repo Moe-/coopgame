@@ -27,10 +27,14 @@ class "World" {
   shaderDir = 1;
   
   gamerunning = false;
+  playDeadSound = true;
+  
+  particleSystemCount = 15;
+  particles = {};
+  
+  gSound = Sound:new();
 
   overlay = nil;
-
-  gSound = Sound:new();
 }
 
 function World:__init(width, height)
@@ -94,6 +98,10 @@ function World:__init(width, height)
   self.playerdriver = PlayerDriver:new(self.player)
   
   self:createShaders()
+  for i = 1, self.particleSystemCount do
+    self.particles[i] = Particle:new(50, 50, 255, 255, 128, 2.5)
+  end
+  
   self.playerdriver:enableInput()
 end
 
@@ -190,6 +198,14 @@ function World:update(dt)
 	
 	self.overlay = GameoverMenu:new(self, true)
 	self.playerdriver:disableInput()
+
+  elseif self.player:isDead() then
+    if self.playDeadSound then
+      gSound:playSound('vehicle_explode_0'..love.math.random(2)+1, 1, x, y, 0, true)
+      self.playDeadSound = false
+    end
+    self.gamerunning = false
+
   end
   
   self.shaderTime = self.shaderTime + 0.0005 * self.shaderDir * dt
@@ -199,6 +215,10 @@ function World:update(dt)
   elseif self.shaderTime > 1 then
     self.shaderTime = 1
     self.shaderDir = -1
+  end
+  
+  for i = 1, self.particleSystemCount do
+    self.particles[i]:update(dt)
   end
 end
 
@@ -233,6 +253,10 @@ function World:draw()
   end
   
   self.player:draw()
+  
+  for i = 1, self.particleSystemCount do
+    self.particles[i]:draw()
+  end
 
   self.camera:unsetCamera()
 
@@ -285,6 +309,14 @@ end
 
 function World:hitVehicle(vehicle, damage)
   vehicle:hit(damage)
+  for i = 1, self.particleSystemCount do
+    if not self.particles[i]:isActive() then
+      local x, y = self.player:getPosition()
+      self.particles[i]:setPosition(x, y)
+      self.particles[i]:reset()
+      break
+    end
+  end
 end
 
 function World:runOver(vehicle, enemy)
@@ -300,6 +332,8 @@ function World:addEnemyShot(x, y, rot)
   local fixture = love.physics.newFixture(body, shape, 50)
   fixture:setFilterData(PHYSICS_CATEGORY_SHOT_ENEMY, PHYSICS_MASK_SHOT_ENEMY, PHYSICS_GROUP_SHOT_ENEMY)
   fixture:setUserData({["name"] = "shot", ["damage"] = 10, ["reference"] = body, ["world"] = self, ["cat"] = "enemy"})
+  
+  gSound:playSound('enemy_shoot_0'..love.math.random(2)+1, 1, x, y, 0, true)
 end
 
 function World:addVehicleShot(x, y, rot)
