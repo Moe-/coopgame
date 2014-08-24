@@ -125,13 +125,7 @@ function World:update(dt)
 	end
   end
   
---  for i,v in pairs(self.shots) do
---    v[1] = v[1] + 20 * dt * v[3]
---    v[2] = v[2] + 20 * dt * v[4]
---    if v[1] < 0 or v[1] > self.width or v[2] < 0 or v[2] > self.height then
---      self.shots[i] = nil
---    end
---  end
+  self:updateShots()
   
   if love.mouse.isDown("l") and self.nextMouseEvent <= 0 then
     self.nextMouseEvent = 0.02
@@ -178,7 +172,7 @@ function World:draw()
   for i,v in pairs(self.shots) do
     local x, y = v:getPosition()
     local dx, dy = v:getLinearVelocity()
-    love.graphics.line(x, y, x + dx, y + dy)
+    love.graphics.line(x, y, x + 0.25 * dx, y + 0.25 * dy)
   end
   
   self.player:draw()
@@ -194,4 +188,14 @@ function World:removeShot(shot)
     end
   end
   shot:destroy()
+end
+
+function World:updateShots()
+  for i, v in pairs(self.shots) do
+    local x, y = v:getPosition()
+    if x < 0 or x > self.width or y < 0 or y > self.height then
+      self.shots[i] = nil
+      v:destroy()
+    end
+  end
 end
