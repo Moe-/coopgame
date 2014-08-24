@@ -2,7 +2,7 @@ class "Enemy" {
   
 }
 
-function Enemy:__init(x, y, gfx, world)
+function Enemy:__init(x, y, gfx, world, realWorld)
   self.x = x
   self.y = y
   self.gfx = gfx
@@ -12,6 +12,7 @@ function Enemy:__init(x, y, gfx, world)
   self.shape = love.physics.newRectangleShape(self.size, self.size)
   --self.shape = love.physics.newCircleShape(self.size)
   self.fixture = love.physics.newFixture(self.body, self.shape, 15)
+  self.fixture:setUserData({["name"] = "enemy", ["reference"] = self, ["world"] = realWorld})
 end
 
 function Enemy:update(dt)

@@ -8,6 +8,8 @@ class "Physics" {
 function Physics:__init()
   self.pWorld = love.physics.newWorld(0,0,true)
   love.physics.setMeter(64)
+  
+  self.pWorld:setCallbacks(beginContact, endContact, preSolve, postSolve)
 end
 
 function Physics:update(dt)
@@ -19,4 +21,61 @@ end
 
 function Physics:addObject(physObject)
   table.insert(self.pObjects, self.physObject)
+end
+
+function beginContact(a, b, coll)
+  if a ~= nil and b ~= nil then
+    local objA = a:getUserData()
+    local objB = b:getUserData()
+  
+    if objA ~= nil and objB ~= nil and not (objA.name == "shot" and objB.name == "shot") then
+      print("Contact start", objA.name, objB.name)
+      if objA.name == "shot" or objB.name == "shot" then
+        local shot = nil
+        local obj = nil
+        if objA.name == "shot" then
+          shot = objA
+          obj = objB
+        else
+          shot = objB
+          obj = objA
+        end
+        
+        --shot.world:removeShot(shot)
+      end
+    end
+  end
+end
+
+function Physics:endContact(a, b, coll)
+  if a ~= nil and b ~= nil then
+    local objA = a:getUserData()
+    local objB = b:getUserData()
+    
+    if objA ~= nil and objB ~= nil and not (objA.name == "shot" and objB.name == "shot") then
+      print("Contact end", objA.name, objB.name)
+    end
+  end
+end
+
+function Physics:preSolve(a, b, coll)
+  if a ~= nil and b ~= nil then
+  local objA = a:getUserData()
+  local objB = b:getUserData()
+
+    if objA ~= nil and objB ~= nil and not (objA.name == "shot" and objB.name == "shot") then
+      print("preSolve", objA.name, objB.name)
+    end
+  end
+end
+
+function Physics:postSolve(a, b, coll, normalimpulse1, tangentimpulse1, normalimpulse2, tangentimpulse2)
+  if a ~= nil and b ~= nil then
+    local objA = a:getUserData()
+    local objB = b:getUserData()
+
+    if objA ~= nil and objB ~= nil and not (objA.name == "shot" and objB.name == "shot") then
+      print("postSolve", objA.name, objB.name)
+    end
+  end
 end

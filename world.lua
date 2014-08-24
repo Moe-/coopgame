@@ -28,7 +28,7 @@ function World:__init(width, height)
   
   self:generateObjects(1, 2)
 
-  self.player = Vehicle:new(self.physWorld.pWorld, startPoint[1], startPoint[2], 10, 10, nil)
+  self.player = Vehicle:new(self.physWorld.pWorld, startPoint[1], startPoint[2], 10, 10, nil, self)
   
   self.physWorld:addObject(self.player)
 
@@ -49,7 +49,7 @@ function World:generateObjects(countX, countY)
       local xCoord = math.random((x - 1) * secWidth + size, x * secWidth - size)
       local yCoord = math.random((y - 1) * secHeight + size, y * secHeight - size)
 
-      table.insert(self.undestroyables, Undestroyable:new(xCoord, yCoord, size, math.random(1, 2), self.physWorld.pWorld))
+      table.insert(self.undestroyables, Undestroyable:new(xCoord, yCoord, size, math.random(1, 2), self.physWorld.pWorld, self))
       self:generateDestroyableObjects((x - 1) * secWidth, (y - 1) * secHeight, secWidth, (secHeight - size) / 2)
       self:generateDestroyableObjects((x - 1) * secWidth, y * secHeight - (secHeight - size) / 2, secWidth, (secHeight - size) / 2)
       
@@ -71,13 +71,13 @@ function World:generateDestroyableObjects(posx, posy, width, height)
       if toInsert < 0.15 then
         local xCoord = math.random(posx + (x - 1) * secWidth, posx + x * secWidth)
         local yCoord = math.random(posy + (y - 1) * secHeight, posy + y * secHeight)
-        table.insert(self.enemies, Enemy:new(xCoord, yCoord, self.enemyImg, self.physWorld.pWorld))
+        table.insert(self.enemies, Enemy:new(xCoord, yCoord, self.enemyImg, self.physWorld.pWorld, self))
       elseif toInsert < 0.4 then
         local size = math.random(5, maxSize)
         local xCoord = math.random(posx + (x - 1) * secWidth + size, posx + x * secWidth - size)
         local yCoord = math.random(posy + (y - 1) * secHeight + size, posy + y * secHeight - size)
 
-        table.insert(self.destroyables, Destroyable:new(xCoord, yCoord, size, math.random(1, 2), self.physWorld.pWorld))
+        table.insert(self.destroyables, Destroyable:new(xCoord, yCoord, size, math.random(1, 2), self.physWorld.pWorld, self))
       end
     end
   end   
@@ -119,6 +119,10 @@ function World:update(dt)
     body:setBullet(true)
     body:setLinearDamping(0)
     body:setLinearVelocity(50 * dx/length, 50 * dy/length)
+    
+    local shape = love.physics.newCircleShape(2)
+    local fixture = love.physics.newFixture(body, shape, 50)
+    fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self})
   end
 
   self.nextMouseEvent = self.nextMouseEvent - dt
@@ -145,7 +149,7 @@ function World:draw()
   for i,v in pairs(self.shots) do
     local x, y = v:getPosition()
     local dx, dy = v:getLinearVelocity()
-    love.graphics.line(x, y, x + 5 * dx, y + 5 * dy)
+    love.graphics.line(x, y, x + dx, y + dy)
   end
   
   self.player:draw()

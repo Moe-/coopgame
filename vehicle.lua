@@ -12,7 +12,7 @@ class "Vehicle" {
   udt = 0;
 }
 
-function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed)
+function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed, realWorld)
 	self.x = x
   self.y = y
   -- physics:
@@ -22,6 +22,7 @@ function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed)
   self.rotSpeed = rotSpeed or 1
   self.shape = pShape or love.physics.newRectangleShape(0,0,50,100)
   self.fixture = pFixture or love.physics.newFixture(self.body, self.shape, self.weight)
+  self.fixture:setUserData({["name"] = "vehicle", ["reference"] = self, ["world"] = realWorld})
   
   self:updatePhysicsProperties()
   -- !physics
@@ -67,7 +68,7 @@ function Vehicle:update(dt)
 	  self.rot = self.body:getAngle()
 	  --print(math.sin(self.rot)*1000 .. ", " .. math.cos(self.rot)*1000)
 	  self.x,self.y = self.body:getPosition()
-	  print(self.x..","..self.y)
+	  --print(self.x..","..self.y)
 	end
 end
 
