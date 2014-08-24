@@ -35,6 +35,8 @@ function PlayerDriver:update(dt)
 		self.timetonextshot = 0.5
     
 		self.vehicle:shoot()
+
+		gSound:playSound('vehicle_shoot_0'..love.math.random(2)+1, 1, self.vehicle.x, self.vehicle.y, self.vehicle.z, true)
 	end
 	
 	self.timetonextshot = self.timetonextshot - dt
