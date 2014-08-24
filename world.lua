@@ -118,7 +118,7 @@ function World:update(dt)
   if love.mouse.isDown("l") and self.nextMouseEvent <= 0 then
     self.nextMouseEvent = 0.02
     local mousex, mousey = love.mouse.getPosition()
-    local posx, posy = self.player:getCanonPosition()
+    local posx, posy = self.player:getCannonPosition()
     local dx = mousex - (-self.player.x + love.window.getWidth()/2) - posx
     local dy = mousey - (-self.player.y + love.window.getHeight()/2) - posy
     local length = math.sqrt(dx*dx, dy*dy)

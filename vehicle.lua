@@ -136,7 +136,7 @@ function Vehicle:draw()
 	love.graphics.pop()
 end
 
-function Vehicle:getCanonPosition()
+function Vehicle:getCannonPosition()
   return self.towerLength * math.cos(self.towerRot) + self.x, 
 			self.towerLength * math.sin(self.towerRot) + self.y
 end
