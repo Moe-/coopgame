@@ -158,3 +158,7 @@ function Vehicle:isDead()
   end
   return false
 end
+
+function Vehicle:applyLinearImpulse(fx, fy)
+  self.body:applyLinearImpulse(10000 * fx, 10000 * fy)
+end

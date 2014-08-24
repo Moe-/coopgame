@@ -43,22 +43,26 @@ function World:__init(width, height)
   self.physWorld = Physics:new()
   
 -- TODO: Fix level boundaries
---  self.body = love.physics.newBody(self.physWorld.pWorld, 0, 0, 'static')
---  local shape = love.physics.newEdgeShape( 0, 0, width, 0)
---  local fixture = love.physics.newFixture(self.body, shape, 15)
---  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
---  
---  shape = love.physics.newEdgeShape(width, 0, width, height)
---  fixture = love.physics.newFixture(self.body, shape, 15)
---  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+  self.body = love.physics.newBody(self.physWorld.pWorld, 0, 0, 'static')
+  local shape = love.physics.newEdgeShape( 0, 0, width, 0)
+  local fixture = love.physics.newFixture(self.body, shape, 15)
+  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+  fixture:setFilterData(PHYSICS_CATEGORY_BONDARY, PHYSICS_MASK_BONDARY, PHYSICS_GROUP_BONDARY)
+  
+  shape = love.physics.newEdgeShape(width, 0, width, height)
+  fixture = love.physics.newFixture(self.body, shape, 15)
+  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+  fixture:setFilterData(PHYSICS_CATEGORY_BONDARY, PHYSICS_MASK_BONDARY, PHYSICS_GROUP_BONDARY)
 
---  shape = love.physics.newEdgeShape( 0, 0, 0, height)
---  fixture = love.physics.newFixture(self.body, shape, 15)
---  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
---  
---  shape = love.physics.newEdgeShape( 0, height, width, height)
---  fixture = love.physics.newFixture(self.body, shape, 15)
---  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+  shape = love.physics.newEdgeShape( 0, 0, 0, height)
+  fixture = love.physics.newFixture(self.body, shape, 15)
+  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+  fixture:setFilterData(PHYSICS_CATEGORY_BONDARY, PHYSICS_MASK_BONDARY, PHYSICS_GROUP_BONDARY)
+  
+  shape = love.physics.newEdgeShape( 0, height, width, height)
+  fixture = love.physics.newFixture(self.body, shape, 15)
+  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+  fixture:setFilterData(PHYSICS_CATEGORY_BONDARY, PHYSICS_MASK_BONDARY, PHYSICS_GROUP_BONDARY)
   
   self:generateObjects(3, 2)
 
@@ -77,7 +81,7 @@ function World:__init(width, height)
 end
 
 function World:generateObjects(countX, countY)
-  self.startPoint = {0.05 * math.random() * self.width, math.random() * self.height}
+  self.startPoint = {50 + 0.05 * math.random() * self.width, 50 + 0.9 * math.random() * self.height}
   self.targetPoint = {(1.0 - 0.05 * math.random()) * self.width, math.random() * self.height}
   
   local minSize = 5
@@ -276,3 +280,8 @@ end
 function World:hitVehicle(vehicle)
   vehicle:hit()
 end
+
+function World:collideWallVehicle(wall, vehicle, coll)
+  vehicle:applyLinearImpulse(coll:getNormal())
+end
+
