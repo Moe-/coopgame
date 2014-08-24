@@ -17,7 +17,7 @@ function Enemy:__init(x, y, gfx, world, realWorld)
   --self.shape = love.physics.newCircleShape(self.size)
   self.fixture = love.physics.newFixture(self.body, self.shape, 15)
   self.fixture:setUserData({["name"] = "enemy", ["reference"] = self, ["world"] = realWorld})
-  self.fixture:setFilterData(5, 5, 5)
+  self.fixture:setFilterData(PHYSICS_CATEGORY_ENEMY, PHYSICS_MASK_ENEMY, PHYSICS_GROUP_ENEMY)
   self.body:setLinearDamping(2)
   self.body:setAngularDamping(1)
 end
@@ -90,6 +90,10 @@ function Enemy:hit()
     return true
   end
   return false
+end
+
+function Enemy:kill()
+  self.energy = 0
 end
 
 function Enemy:destroy()

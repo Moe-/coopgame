@@ -1,4 +1,5 @@
 require('utils')
+require('constants')
 require('world')
 require('vehicle')
 require('mainmenu')

@@ -45,7 +45,7 @@ function World:__init(width, height)
 --  fixture = love.physics.newFixture(self.body, shape, 15)
 --  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
   
-  self:generateObjects(1, 2)
+  self:generateObjects(5, 5)
 
   self.player = Vehicle:new(self.physWorld.pWorld, startPoint[1], startPoint[2], 10, 10, nil, nil, self)
   
@@ -144,7 +144,7 @@ function World:update(dt)
     
     local shape = love.physics.newCircleShape(2)
     local fixture = love.physics.newFixture(body, shape, 50)
-    fixture:setFilterData(1, 1, -2)
+    fixture:setFilterData(PHYSICS_CATEGORY_SHOT, PHYSICS_MASK_SHOT, PHYSICS_GROUP_SHOT)
     fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self})
   end
 
@@ -212,4 +212,10 @@ function World:hitEnemy(enemy)
     enemy:destroy()
     removeFromList(self.enemies, enemy)
   end
+end
+
+function World:runOver(vehicle, enemy)
+  enemy:kill()
+  enemy:destroy()
+  removeFromList(self.enemies, enemy)
 end

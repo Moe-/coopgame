@@ -48,6 +48,12 @@ function beginContact(a, b, coll)
           obj.world:hitEnemy(obj.reference)
         end
       end
+      
+      if (objA.name == "vehicle" and objB.name == "enemy") then
+        objB.world:runOver(objA.reference, objB.reference)
+      elseif (objB.name == "vehicle" and objA.name == "enemy") then
+        objB.world:runOver(objB.reference, objA.reference)
+      end
     end
   end
 end
