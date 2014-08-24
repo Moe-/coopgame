@@ -13,6 +13,7 @@ class "Vehicle" {
   udt = 0;
   vel = 12500;
   maxEnergy = 200;
+  dead = false;
 
   world = nil;
 
@@ -88,6 +89,13 @@ function Vehicle:update(dt)
 	  self.rot = self.body:getAngle()
 	  self.x,self.y = self.body:getPosition()
 	end
+  
+  local velocity = getLength(self.body:getLinearVelocity())
+  if velocity > 10 and not gSound:isSoundPlaying('vehicle_drive') then
+    gSound:playSound('vehicle_drive', 1, self.x, self.y, 0, true)
+  elseif velocity <= 10 and gSound:isSoundPlaying('vehicle_drive') then
+    gSound:stopSound('vehicle_drive')
+  end
 end
 
 -- all the functions below are per-frame (have to be called every frame)

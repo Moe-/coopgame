@@ -6,6 +6,7 @@ require('mainmenu')
 require('enemy')
 require('destroyable')
 require('undestroyable')
+require('particle')
 
 gScreen = nil
 

@@ -130,3 +130,15 @@ function Sound:changeSoundVolume(soundName,newVolume)
 		m:setVolume(newVolume)
 	end
 end
+
+function Sound:isSoundPlaying(sound)
+
+	local s, v = self.soundlist:getSound(sound)
+
+	if s then
+		return s:isPlaying()
+  else
+    print("No such sound file")
+	end
+  return false
+end
