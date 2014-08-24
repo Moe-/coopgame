@@ -101,6 +101,10 @@ function World:update(dt)
   
   for i, v in pairs(self.enemies) do
     v:update(dt)
+	if not v:hasTarget() then
+	  v:assignTarget(self.player)
+	  print("assigning target")
+	end
   end
   
 --  for i,v in pairs(self.shots) do
