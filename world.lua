@@ -181,12 +181,13 @@ function World:draw()
 end
 
 function World:removeShot(shot)
-  for i, v in pairs(self.shots) do
-    if v == shot then
-      self.shots[i] = nil
-      break
-    end
-  end
+  removeFromList(self.shots, shot)
+  --for i, v in pairs(self.shots) do
+--    if v == shot then
+--      self.shots[i] = nil
+--      break
+--    end
+--  end
   shot:destroy()
 end
 
@@ -197,5 +198,18 @@ function World:updateShots()
       self.shots[i] = nil
       v:destroy()
     end
+  end
+end
+
+function World:destroyDestroyable(destroyable)
+  destroyable:destroy()
+  removeFromList(self.destroyables, destroyable)
+end
+
+function World:hitEnemy(enemy)
+  local dead = enemy:hit()
+  if dead then
+    enemy:destroy()
+    removeFromList(self.enemies, enemy)
   end
 end
