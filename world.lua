@@ -225,8 +225,8 @@ function World:destroyDestroyable(destroyable)
   removeFromList(self.destroyables, destroyable)
 end
 
-function World:hitEnemy(enemy)
-  local dead = enemy:hit()
+function World:hitEnemy(enemy, damage)
+  local dead = enemy:hit(damage)
   if dead then
     enemy:destroy()
     removeFromList(self.enemies, enemy)
@@ -237,6 +237,22 @@ function World:runOver(vehicle, enemy)
   enemy:kill()
   enemy:destroy()
   removeFromList(self.enemies, enemy)
+end
+
+function World:addShot(x, y, rot, damage)
+	local body = love.physics.newBody(self.physWorld.pWorld, x, y, 'dynamic')
+	table.insert(self.shots, body)
+	body:setBullet(true)
+	body:setLinearDamping(0)
+
+	local dx1 = math.cos(rot) * self.bulletSpeed
+	local dy1 = math.sin(rot) * self.bulletSpeed
+	body:setLinearVelocity(dx1, dy1)
+  
+	local shape = love.physics.newCircleShape(2)
+	local fixture = love.physics.newFixture(body, shape, 50)
+	fixture:setFilterData(PHYSICS_CATEGORY_SHOT_ENEMY, PHYSICS_MASK_SHOT_ENEMY, PHYSICS_GROUP_SHOT_ENEMY)
+	fixture:setUserData({["name"] = "shot", ["damage"] = damage, ["reference"] = body, ["world"] = self})
 end
 
 function World:addEnemyShot(enemy, tx, ty)

@@ -86,8 +86,8 @@ function Enemy:draw()
   love.graphics.setColor(255, 255, 255, 255)
 end
 
-function Enemy:hit()
-  self.energy = self.energy - 10
+function Enemy:hit(damage)
+  self.energy = self.energy - damage
   if self.energy <= 0 then
     return true
   end
