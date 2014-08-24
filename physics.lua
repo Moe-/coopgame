@@ -41,10 +41,16 @@ function beginContact(a, b, coll)
         end
         
         shot.world:removeShot(shot.reference)
-        if obj.name == "destroyable" then
-          obj.world:destroyDestroyable(obj.reference)
-        elseif obj.name == "enemy" then
-          obj.world:hitEnemy(obj.reference)
+        if shot.cat == "vehicle" then
+          if obj.name == "destroyable" then
+            obj.world:destroyDestroyable(obj.reference)
+          elseif obj.name == "enemy" then
+            obj.world:hitEnemy(obj.reference)
+          end
+        elseif shot.cat == "enemy" then
+          if obj.name == "vehicle" then
+            obj.world:hitVehicle(obj.reference)
+          end
         end
       end
       

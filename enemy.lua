@@ -3,6 +3,7 @@ class "Enemy" {
   udt = 0;
   target = nil;
   pathfinding = 0;
+  maxEnergy = 100;
 }
 
 function Enemy:__init(x, y, gfx, world, realWorld)
@@ -10,7 +11,7 @@ function Enemy:__init(x, y, gfx, world, realWorld)
   self.y = y
   self.gfx = gfx
   self.size = 32
-  self.energy = 100
+  self.energy = self.maxEnergy
   self.realWorld = realWorld
   
   self.body = love.physics.newBody(world, x, y, 'dynamic')
@@ -82,6 +83,11 @@ function Enemy:draw()
   self.x,self.y = self.body:getPosition()
   self.width, self.height = self.gfx:getDimensions()
   love.graphics.draw(self.gfx, self.x - self.width/2, self.y - self.height/2)
+  
+  love.graphics.setColor(255, 0, 0, 192)
+  love.graphics.rectangle("fill", self.x - self.width/2 + 35, self.y - self.height/2 - 10, 50, 15)
+  love.graphics.setColor(0, 255, 0, 192)
+  love.graphics.rectangle("fill", self.x - self.width/2 + 35, self.y - self.height/2 - 10, 50 * math.max(0, self.energy/self.maxEnergy), 15)
   
   love.graphics.setColor(255, 255, 255, 255)
 end

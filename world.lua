@@ -158,7 +158,7 @@ function World:update(dt)
     local shape = love.physics.newCircleShape(2)
     local fixture = love.physics.newFixture(body, shape, 50)
     fixture:setFilterData(PHYSICS_CATEGORY_SHOT, PHYSICS_MASK_SHOT, PHYSICS_GROUP_SHOT)
-    fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self})
+    fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self, ["cat"] = "vehicle"})
   end
 
   self.nextMouseEvent = self.nextMouseEvent - dt
@@ -191,6 +191,10 @@ function World:draw()
   self.player:draw()
 
   self.camera:unsetCamera()
+  
+  if self.player:isDead() then
+    love.graphics.print("Ah, what a looser...", 10, 250, 0, 2, 2)
+  end
 end
 
 function World:removeShot(shot)
@@ -244,5 +248,9 @@ function World:addEnemyShot(enemy, tx, ty)
   local shape = love.physics.newCircleShape(2)
   local fixture = love.physics.newFixture(body, shape, 50)
   fixture:setFilterData(PHYSICS_CATEGORY_SHOT_ENEMY, PHYSICS_MASK_SHOT_ENEMY, PHYSICS_GROUP_SHOT_ENEMY)
-  fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self})
+  fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self, ["cat"] = "enemy"})
+end
+
+function World:hitVehicle(vehicle)
+  vehicle:hit()
 end
