@@ -21,6 +21,7 @@ class "World" {
   physWorld = nil;
 
   nextMouseEvent = 0;
+  gameWon = false;
 }
 
 function World:__init(width, height)
@@ -56,14 +57,14 @@ function World:__init(width, height)
 --  fixture = love.physics.newFixture(self.body, shape, 15)
 --  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
   
-  self:generateObjects(5, 5)
+  self:generateObjects(3, 2)
 
   self.fractions["green"] = Fraction:new(love.graphics.newImage("gfx/green_fraction.png"))
   self.fractions["red"] = Fraction:new(love.graphics.newImage("gfx/red_fraction.png"))
 
   print(self.fractions["red"]:getFlag())
 
-  self.player = Vehicle:new(self.physWorld.pWorld, startPoint[1], startPoint[2], 10, 10, nil, nil, self, self.fractions["green"])
+  self.player = Vehicle:new(self.physWorld.pWorld, self.startPoint[1], self.startPoint[2], 10, 10, nil, nil, self, self.fractions["green"])
   
   self.physWorld:addObject(self.player)
 
@@ -73,8 +74,8 @@ function World:__init(width, height)
 end
 
 function World:generateObjects(countX, countY)
-  startPoint = {0.05 * math.random() * self.width, math.random() * self.height}
-  targetPoint = {(1.0 - 0.05 * math.random()) * self.width, math.random() * self.height}
+  self.startPoint = {0.05 * math.random() * self.width, math.random() * self.height}
+  self.targetPoint = {(1.0 - 0.05 * math.random()) * self.width, math.random() * self.height}
   
   local minSize = 5
   local secWidth = self.width/countX
@@ -82,11 +83,13 @@ function World:generateObjects(countX, countY)
   local maxSize = math.min(secWidth, secHeight)
   for y = 1, countY do
     for x = 1, countX do
-      local size = math.random(5, maxSize)
+      local size = math.random(15, maxSize)
       local xCoord = math.random((x - 1) * secWidth + size, x * secWidth - size)
       local yCoord = math.random((y - 1) * secHeight + size, y * secHeight - size)
 
-      table.insert(self.undestroyables, Undestroyable:new(xCoord, yCoord, size, math.random(1, 2), self.physWorld.pWorld, self))
+      if getDistance(xCoord, yCoord, self.targetPoint[1], self.targetPoint[2]) > 2 * size then
+        table.insert(self.undestroyables, Undestroyable:new(xCoord, yCoord, size, math.random(1, 2), self.physWorld.pWorld, self))
+      end
       self:generateDestroyableObjects((x - 1) * secWidth, (y - 1) * secHeight, secWidth, (secHeight - size) / 2)
       self:generateDestroyableObjects((x - 1) * secWidth, y * secHeight - (secHeight - size) / 2, secWidth, (secHeight - size) / 2)
       
@@ -101,7 +104,7 @@ function World:generateDestroyableObjects(posx, posy, width, height)
   local ySecs = math.random(1, 3)
   local secWidth = width/xSecs
   local secHeight = height/ySecs
-  local maxSize = math.min(secWidth, secHeight) / 2
+  local maxSize = math.max(15, math.min(secWidth, secHeight) / 2)
   for x = 1, xSecs do
     for y = 1, ySecs do
       local toInsert = math.random()
@@ -110,7 +113,7 @@ function World:generateDestroyableObjects(posx, posy, width, height)
         local yCoord = math.random(posy + (y - 1) * secHeight, posy + y * secHeight)
         table.insert(self.enemies, Enemy:new(xCoord, yCoord, self.enemyImg, self.physWorld.pWorld, self))
       elseif toInsert < 0.4 then
-        local size = math.random(5, maxSize)
+        local size = math.random(15, maxSize)
         local xCoord = math.random(posx + (x - 1) * secWidth + size, posx + x * secWidth - size)
         local yCoord = math.random(posy + (y - 1) * secHeight + size, posy + y * secHeight - size)
 
@@ -156,7 +159,7 @@ function World:update(dt)
     body:setBullet(true)
     body:setLinearDamping(0)
 
-	local dx1, dy1 = normalize(dx,dy)
+    local dx1, dy1 = normalize(dx,dy)
     body:setLinearVelocity(self.bulletSpeed * dx1, self.bulletSpeed * dy1)
     
     local shape = love.physics.newCircleShape(2)
@@ -164,7 +167,12 @@ function World:update(dt)
     fixture:setFilterData(PHYSICS_CATEGORY_SHOT, PHYSICS_MASK_SHOT, PHYSICS_GROUP_SHOT)
     fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self, ["cat"] = "vehicle"})
   end
-
+  
+  local pposx, pposy = self.player:getPosition()
+  if not self.player:isDead() and getDistance(pposx, pposy, self.targetPoint[1], self.targetPoint[2]) < 20 then
+    self.gameWon = true
+  end
+  
   self.nextMouseEvent = self.nextMouseEvent - dt
 end
 
@@ -172,7 +180,7 @@ function World:draw()
   self.camera:setCamera()
 
   love.graphics.draw(self.backgroundImg, self.backgroundQuad, 0, 0)
-  love.graphics.rectangle("fill", targetPoint[1] - 10, targetPoint[2] - 50, 20, 100)
+  love.graphics.rectangle("fill", self.targetPoint[1] - 10, self.targetPoint[2] - 50, 20, 100)
   
   for i, v in pairs(self.undestroyables) do
     v:draw()
@@ -198,7 +206,9 @@ function World:draw()
 
   self.camera:unsetCamera()
   
-  if self.player:isDead() then
+  if self.gameWon then
+    love.graphics.print("Amazing, a winner!", 10, 250, 0, 2, 2)
+  elseif self.player:isDead() then
     love.graphics.print("Ah, what a looser...", 10, 250, 0, 2, 2)
   end
 end

@@ -144,6 +144,10 @@ function Vehicle:getCannonPosition()
 			self.towerLength * math.sin(self.towerRot - math.pi/2) + self.y
 end
 
+function Vehicle:getPosition()
+  return self.body:getPosition()
+end
+
 function Vehicle:hit()
   self.energy = self.energy - 10
 end
