@@ -14,9 +14,9 @@ end
 
 function Physics:update(dt)
   self.pWorld:update(dt)
-  for i,v in pairs(self.pObjects) do
-    v:update(dt)
-  end
+  --for i,v in pairs(self.pObjects) do
+  --  v:update(dt)
+  --end
 end
 
 function Physics:addObject(physObject)
@@ -41,7 +41,7 @@ function beginContact(a, b, coll)
           obj = objA
         end
         
-        --shot.world:removeShot(shot)
+        shot.world:removeShot(shot.reference)
       end
     end
   end

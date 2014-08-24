@@ -32,6 +32,7 @@ function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed, realW
   self.shape = pShape or love.physics.newRectangleShape(0,0,50,100)
   self.fixture = pFixture or love.physics.newFixture(self.body, self.shape, self.weight)
   self.fixture:setUserData({["name"] = "vehicle", ["reference"] = self, ["world"] = realWorld})
+  self.fixture:setFilterData(2, 2, -2)
   
   self:updatePhysicsProperties()
   -- !physics

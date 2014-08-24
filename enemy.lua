@@ -16,6 +16,7 @@ function Enemy:__init(x, y, gfx, world, realWorld)
   --self.shape = love.physics.newCircleShape(self.size)
   self.fixture = love.physics.newFixture(self.body, self.shape, 15)
   self.fixture:setUserData({["name"] = "enemy", ["reference"] = self, ["world"] = realWorld})
+  self.fixture:setFilterData(5, 5, 5)
   self.body:setLinearDamping(2)
   self.body:setAngularDamping(1)
 end

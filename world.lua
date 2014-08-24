@@ -27,6 +27,24 @@ function World:__init(width, height)
   
   self.physWorld = Physics:new()
   
+-- TODO: Fix level boundaries
+--  self.body = love.physics.newBody(self.physWorld.pWorld, 0, 0, 'static')
+--  local shape = love.physics.newEdgeShape( 0, 0, width, 0)
+--  local fixture = love.physics.newFixture(self.body, shape, 15)
+--  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+--  
+--  shape = love.physics.newEdgeShape(width, 0, width, height)
+--  fixture = love.physics.newFixture(self.body, shape, 15)
+--  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+
+--  shape = love.physics.newEdgeShape( 0, 0, 0, height)
+--  fixture = love.physics.newFixture(self.body, shape, 15)
+--  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+--  
+--  shape = love.physics.newEdgeShape( 0, height, width, height)
+--  fixture = love.physics.newFixture(self.body, shape, 15)
+--  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+  
   self:generateObjects(1, 2)
 
   self.player = Vehicle:new(self.physWorld.pWorld, startPoint[1], startPoint[2], 10, 10, nil, nil, self)
@@ -131,6 +149,7 @@ function World:update(dt)
     
     local shape = love.physics.newCircleShape(2)
     local fixture = love.physics.newFixture(body, shape, 50)
+    fixture:setFilterData(1, 1, -2)
     fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self})
   end
 
@@ -164,4 +183,14 @@ function World:draw()
   self.player:draw()
 
   self.camera:unsetCamera()
+end
+
+function World:removeShot(shot)
+  for i, v in pairs(self.shots) do
+    if v == shot then
+      self.shots[i] = nil
+      break
+    end
+  end
+  shot:destroy()
 end

@@ -14,6 +14,7 @@ function Undestroyable:__init(x, y, size, form, world, realWorld)
     self.shape = love.physics.newRectangleShape(size, size)
   end
   self.fixture = love.physics.newFixture(self.body, self.shape, 100)
+  self.fixture:setFilterData(4, 4, 4)
   self.fixture:setUserData({["name"] = "undestroyable", ["reference"] = self, ["world"] = realWorld})
 end
 

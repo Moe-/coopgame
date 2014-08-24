@@ -14,6 +14,7 @@ function Destroyable:__init(x, y, size, form, world, realWorld)
     self.shape = love.physics.newRectangleShape(size, size)
   end
   self.fixture = love.physics.newFixture(self.body, self.shape, 100)
+  self.fixture:setFilterData(3, 3, 3)
   self.fixture:setUserData({["name"] = "destroyable", ["reference"] = self, ["world"] = realWorld})
 end
 
