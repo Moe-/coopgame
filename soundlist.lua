@@ -30,10 +30,13 @@ function Soundlist:__init()
 	vehicle_shoot_02    = { src = love.audio.newSource("audio/vehicle_shoot_02.wav", "static"), vol = 1 },
 	vehicle_shoot_03    = { src = love.audio.newSource("audio/vehicle_shoot_03.wav", "static"), vol = 1 },
 
-
 	vehicle_explode_01 = { src = love.audio.newSource("audio/vehicle_explode_01.wav", "static"), vol = 1 },
 	vehicle_explode_02 = { src = love.audio.newSource("audio/vehicle_explode_02.wav", "static"), vol = 1 },
 	vehicle_explode_03 = { src = love.audio.newSource("audio/vehicle_explode_03.wav", "static"), vol = 1 },
+
+	enemy_shoot_01     = { src = love.audio.newSource("audio/enemy_shoot_01.wav", "static"), vol = 1 },
+	enemy_shoot_02     = { src = love.audio.newSource("audio/enemy_shoot_02.wav", "static"), vol = 2 },
+	enemy_shoot_03     = { src = love.audio.newSource("audio/enemy_shoot_03.wav", "static"), vol = 3 },
   }
 end
 
