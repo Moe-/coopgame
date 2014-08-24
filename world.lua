@@ -20,8 +20,6 @@ class "World" {
   fractions = {};
 
   physWorld = nil;
-
-  nextMouseEvent = 0;
   gameWon = false;
 
   gSound = Sound:new()
@@ -153,37 +151,10 @@ function World:update(dt)
   
   self:updateShots()
   
-  if love.mouse.isDown("l") and self.nextMouseEvent <= 0 then
-    self.nextMouseEvent = 0.5
-    local mousex, mousey = love.mouse.getPosition()
-    local posx, posy = self.player:getCannonPosition()
-    local dx = mousex - (-self.player.x + love.window.getWidth()/2) - posx
-    local dy = mousey - (-self.player.y + love.window.getHeight()/2) - posy
-    --local length = math.sqrt(dx*dx, dy*dy)
-    --table.insert(self.shots, {posx, posy, dx/length, dy/length})
-    local body = love.physics.newBody( self.physWorld.pWorld, posx, posy, 'dynamic')
-    table.insert(self.shots, body)
-    body:setBullet(true)
-    body:setLinearDamping(0)
-
-    local dx1, dy1 = normalize(dx,dy)
-    body:setLinearVelocity(self.bulletSpeed * dx1, self.bulletSpeed * dy1)
-    
-    local shape = love.physics.newCircleShape(2)
-    local fixture = love.physics.newFixture(body, shape, 50)
-    fixture:setFilterData(PHYSICS_CATEGORY_SHOT, PHYSICS_MASK_SHOT, PHYSICS_GROUP_SHOT)
-    fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self, ["cat"] = "vehicle"})
-
-	gSound:playSound('vehicle_shoot_0'..love.math.random(2)+1, 1, self.player.x, self.player.y, self.player.z, true)
-
-  end
-  
   local pposx, pposy = self.player:getPosition()
   if not self.player:isDead() and getDistance(pposx, pposy, self.targetPoint[1], self.targetPoint[2]) < 20 then
     self.gameWon = true
   end
-  
-  self.nextMouseEvent = self.nextMouseEvent - dt
 end
 
 function World:draw()
@@ -249,8 +220,8 @@ function World:destroyDestroyable(destroyable)
   removeFromList(self.destroyables, destroyable)
 end
 
-function World:hitEnemy(enemy)
-  local dead = enemy:hit()
+function World:hitEnemy(enemy, damage)
+  local dead = enemy:hit(damage)
   if dead then
     enemy:destroy()
     removeFromList(self.enemies, enemy)
@@ -263,18 +234,35 @@ function World:runOver(vehicle, enemy)
   removeFromList(self.enemies, enemy)
 end
 
-function World:addEnemyShot(enemy, tx, ty)
-  local body = love.physics.newBody( self.physWorld.pWorld, enemy.x, enemy.y, 'dynamic')
-  table.insert(self.shots, body)
-  body:setBullet(true)
-  body:setLinearDamping(0)
-  local dx1, dy1 = normalize(tx,ty)
-  body:setLinearVelocity(70 * dx1, 70 * dy1)
+function World:addEnemyShot(x, y, rot)
+  local body = self:createShotBody(x, y, rot)
   
   local shape = love.physics.newCircleShape(2)
   local fixture = love.physics.newFixture(body, shape, 50)
   fixture:setFilterData(PHYSICS_CATEGORY_SHOT_ENEMY, PHYSICS_MASK_SHOT_ENEMY, PHYSICS_GROUP_SHOT_ENEMY)
-  fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self, ["cat"] = "enemy"})
+  fixture:setUserData({["name"] = "shot", ["damage"] = 50, ["reference"] = body, ["world"] = self, ["cat"] = "enemy"})
+end
+
+function World:addVehicleShot(x, y, rot)
+  local body = self:createShotBody(x, y, rot)
+  
+  local shape = love.physics.newCircleShape(2)
+  local fixture = love.physics.newFixture(body, shape, 50)
+  fixture:setFilterData(PHYSICS_CATEGORY_SHOT, PHYSICS_MASK_SHOT, PHYSICS_GROUP_SHOT)
+  fixture:setUserData({["name"] = "shot", ["damage"] = 50, ["reference"] = body, ["world"] = self, ["cat"] = "vehicle"})
+end
+
+function World:createShotBody(x, y, rot)
+	local body = love.physics.newBody(self.physWorld.pWorld, x, y, 'dynamic')
+	table.insert(self.shots, body)
+	body:setBullet(true)
+	body:setLinearDamping(0)
+
+	local dx1 = math.cos(rot) * self.bulletSpeed
+	local dy1 = math.sin(rot) * self.bulletSpeed
+	body:setLinearVelocity(dx1, dy1)
+  
+	return body
 end
 
 function World:hitVehicle(vehicle)

@@ -43,14 +43,9 @@ function Enemy:moveEnemy(dt)
 	if getDistance(self.x, self.y, tX, tY) < 550 then
 	  local tSx = tX-self.x
 	  local tSy = tY-self.y
-	  self:shoot(tSx, tSy)
+	  self.realWorld:addEnemyShot(self.x, self.y, math.atan2(tSx, -tSy) - math.pi/2)
 	end
   end
-end
-
-function Enemy:shoot(tX, tY)
-  --print("pew pew") --TODO !!!
-  self.realWorld:addEnemyShot(self, tX, tY)
 end
 
 -- this function must return a normalized vector that indicates the direction this object should move towards
@@ -94,8 +89,8 @@ function Enemy:draw()
   love.graphics.setColor(255, 255, 255, 255)
 end
 
-function Enemy:hit()
-  self.energy = self.energy - 10
+function Enemy:hit(damage)
+  self.energy = self.energy - damage
   if self.energy <= 0 then
     return true
   end

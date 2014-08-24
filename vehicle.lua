@@ -14,6 +14,8 @@ class "Vehicle" {
   vel = 12500;
   maxEnergy = 200;
 
+  world = nil;
+
   isAccelerating = false;
   isBraking = false;
   isTurningLeft = false;
@@ -36,6 +38,8 @@ function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed, realW
   self.fixture = pFixture or love.physics.newFixture(self.body, self.shape, self.weight)
   self.fixture:setUserData({["name"] = "vehicle", ["reference"] = self, ["world"] = realWorld})
   self.fixture:setFilterData(PHYSICS_CATEGORY_VEHICLE, PHYSICS_MASK_VEHICLE, PHYSICS_GROUP_VEHICLE)
+
+  self.world = realWorld
   
   self:updatePhysicsProperties()
   -- !physics
@@ -106,6 +110,11 @@ end
 
 function Vehicle:setTowerRot(rot)
 	self.towerRot = rot
+end
+
+function Vehicle:shoot()
+	local cx, cy = self:getCannonPosition()
+	self.world:addVehicleShot(cx, cy, self.towerRot - math.pi/2)
 end
 
 function Vehicle:updatePhysicsProperties()
