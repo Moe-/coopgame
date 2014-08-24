@@ -27,11 +27,14 @@ function World:__init(width, height)
 	self.width = width
   self.height = height
   
+  self.bulletSpeed = 400
   self.backgroundImg = love.graphics.newImage('gfx/background.png')
   self.backgroundImg:setWrap('repeat', 'repeat')
   self.backgroundQuad = love.graphics.newQuad(0, 0, width, height, self.backgroundImg:getWidth(), self.backgroundImg:getHeight())
   
   self.enemyImg = love.graphics.newImage('gfx/enemy.png')
+
+  self.bulletImg = love.graphics.newImage("gfx/bullet.png")
   
   self.physWorld = Physics:new()
   
@@ -141,7 +144,7 @@ function World:update(dt)
   self:updateShots()
   
   if love.mouse.isDown("l") and self.nextMouseEvent <= 0 then
-    self.nextMouseEvent = 0.02
+    self.nextMouseEvent = 0.5
     local mousex, mousey = love.mouse.getPosition()
     local posx, posy = self.player:getCannonPosition()
     local dx = mousex - (-self.player.x + love.window.getWidth()/2) - posx
@@ -153,7 +156,7 @@ function World:update(dt)
     body:setBullet(true)
     body:setLinearDamping(0)
 	dx1, dy1 = normalize(dx,dy)
-    body:setLinearVelocity(70 * dx1, 70 * dy1)
+    body:setLinearVelocity(self.bulletSpeed * dx1, self.bulletSpeed * dy1)
     
     local shape = love.physics.newCircleShape(2)
     local fixture = love.physics.newFixture(body, shape, 50)
@@ -185,7 +188,9 @@ function World:draw()
   for i,v in pairs(self.shots) do
     local x, y = v:getPosition()
     local dx, dy = v:getLinearVelocity()
-    love.graphics.line(x, y, x + 0.25 * dx, y + 0.25 * dy)
+	local r = math.atan2(dx, -dy)
+	
+	love.graphics.draw(self.bulletImg, x, y, r - math.pi/2, 1, 1, self.bulletImg:getWidth(), self.bulletImg:getHeight()/2)
   end
   
   self.player:draw()
