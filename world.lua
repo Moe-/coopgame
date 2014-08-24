@@ -121,13 +121,14 @@ function World:update(dt)
     local posx, posy = self.player:getCanonPosition()
     local dx = mousex - (-self.player.x + love.window.getWidth()/2) - posx
     local dy = mousey - (-self.player.y + love.window.getHeight()/2) - posy
-    local length = math.sqrt(dx*dx, dy*dy)
+    --local length = math.sqrt(dx*dx, dy*dy)
     --table.insert(self.shots, {posx, posy, dx/length, dy/length})
     local body = love.physics.newBody( self.physWorld.pWorld, posx, posy, 'dynamic')
     table.insert(self.shots, body)
     body:setBullet(true)
     body:setLinearDamping(0)
-    body:setLinearVelocity(50 * dx/length, 50 * dy/length)
+	dx1, dy1 = normalize(dx,dy)
+    body:setLinearVelocity(70 * dx1, 70 * dy1)
     
     local shape = love.physics.newCircleShape(2)
     local fixture = love.physics.newFixture(body, shape, 50)
