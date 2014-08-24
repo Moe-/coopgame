@@ -156,6 +156,10 @@ function World:generateDestroyableObjects(posx, posy, width, height)
 end
 
 function World:update(dt)
+  for i = 1, self.particleSystemCount do
+    self.particles[i]:update(dt)
+  end
+
   if self.overlay ~= nil then
     self.overlay:update(dt)
   end
@@ -215,10 +219,6 @@ function World:update(dt)
   elseif self.shaderTime > 1 then
     self.shaderTime = 1
     self.shaderDir = -1
-  end
-  
-  for i = 1, self.particleSystemCount do
-    self.particles[i]:update(dt)
   end
 end
 
