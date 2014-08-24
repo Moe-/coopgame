@@ -3,6 +3,7 @@ require('physics')
 require('playerdriver')
 require('fraction')
 require('sound')
+require('countdown')
 
 class "World" {
   width = 10;
@@ -23,14 +24,25 @@ class "World" {
   
   gamerunning = false;
 
-  gSound = Sound:new()
+  overlay = nil;
+
+  gSound = Sound:new();
 }
 
 function World:__init(width, height)
   self.width = width
   self.height = height
 
+  -- NOTE: set gamerunning to true if you want skip the countdown
   self.gamerunning = true
+  -- this if query seems to be unnecessary, but it is used
+  -- to skip the countdown
+  if self.gamerunning == false then
+  	self.overlay = Countdown:new(self, 5)
+  end
+
+  -- set the old system cursor to a new, more cooler cursor
+  love.mouse.setCursor(love.mouse.newCursor("gfx/cursor.png", 16, 16))
   
   self.bulletSpeed = 400
   self.backgroundImg = love.graphics.newImage('gfx/background.png')
@@ -131,10 +143,14 @@ function World:generateDestroyableObjects(posx, posy, width, height)
 end
 
 function World:update(dt)
+  if self.overlay ~= nil then
+    self.overlay:update(dt)
+  end
+
   -- all stuff which has to be updated and is not game relevant, like menus,
   -- has to be putted above this if line
   if self.gamerunning == false then
-    --return
+    return
   end
 
   self.playerdriver:update(dt)
@@ -160,12 +176,12 @@ function World:update(dt)
   self:updateShots()
   
   local pposx, pposy = self.player:getPosition()
-  if not self.player:isDead() and getDistance(pposx, pposy, self.targetPoint[1], self.targetPoint[2]) < 20 then
+  if self.player:isDead() then
+	self.gamerunning = false
+  elseif getDistance(pposx, pposy, self.targetPoint[1], self.targetPoint[2]) < 20 then
     self.gamerunning = false
 	
 	self.playerdriver:disableInput()
-  elseif self.player:isDead() then
-	self.gamerunning = false
   end
 end
 
@@ -198,6 +214,12 @@ function World:draw()
   self.player:draw()
 
   self.camera:unsetCamera()
+
+
+  -- the overlay has to be called last
+  if self.overlay ~= nil then
+    self.overlay:draw()
+  end
   
   --if self.gameWon then
   --  love.graphics.print("Amazing, a winner!", 10, 250, 0, 2, 2)
