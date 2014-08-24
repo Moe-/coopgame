@@ -58,6 +58,12 @@ function beginContact(a, b, coll)
       elseif (objB.name == "vehicle" and objA.name == "enemy") then
         objB.world:runOver(objB.reference, objA.reference)
       end
+      
+      if objA.name == "boundary" and objB.name == "vehicle" and coll:isTouching() then
+        objB.world:collideWallVehicle(objA.reference, objB.reference, coll)
+      elseif objB.name == "boundary" and objA.name == "vehicle" and coll:isTouching() then
+        objB.world:collideWallVehicle(objB.reference, objA.reference, coll)
+      end
     end
   end
 end
