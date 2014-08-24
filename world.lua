@@ -2,6 +2,7 @@ require('playercamera')
 require('physics')
 require('playerdriver')
 require('fraction')
+require('sound')
 
 class "World" {
   width = 10;
@@ -22,6 +23,8 @@ class "World" {
 
   nextMouseEvent = 0;
   gameWon = false;
+
+  gSound = Sound:new()
 }
 
 function World:__init(width, height)
@@ -166,6 +169,9 @@ function World:update(dt)
     local fixture = love.physics.newFixture(body, shape, 50)
     fixture:setFilterData(PHYSICS_CATEGORY_SHOT, PHYSICS_MASK_SHOT, PHYSICS_GROUP_SHOT)
     fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self, ["cat"] = "vehicle"})
+
+	gSound:playSound('vehicle_shoot_0'..love.math.random(2)+1, 1, self.player.x, self.player.y, self.player.z, true)
+
   end
   
   local pposx, pposy = self.player:getPosition()
