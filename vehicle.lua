@@ -52,32 +52,32 @@ function Vehicle:update(dt)
   if self.udt>0.01 then
     self.udt = 0
 	  if self.isAccelerating then
-		self.body:applyForce(-math.sin(self.rot)*self.vel,math.cos(self.rot)*self.vel)
-		self.isAccelerating = false
+      self.body:applyForce(-math.sin(self.rot)*self.vel,math.cos(self.rot)*self.vel)
+      self.isAccelerating = false
 	  end
 	  if self.isBraking then
-		self.body:applyForce(math.sin(self.rot)*self.vel,-math.cos(self.rot)*self.vel)
-		self.isBraking = false
+      self.body:applyForce(math.sin(self.rot)*self.vel,-math.cos(self.rot)*self.vel)
+      self.isBraking = false
 	  end
 	  if self.isTurningLeft then
-		self.body:applyForce(
-		-3*self.rotSpeed*math.cos(self.rot),
-		-3*self.rotSpeed*math.sin(self.rot),
-		self.x-math.cos(self.rot)*10,
-		self.y-math.sin(self.rot)*10)
-		print(self.rot)
+      self.body:applyForce(
+      -3*self.rotSpeed*math.cos(self.rot),
+      -3*self.rotSpeed*math.sin(self.rot),
+      self.x-math.cos(self.rot)*10,
+      self.y-math.sin(self.rot)*10)
+      --print(self.rot)
 
-		self.isTurningLeft = false
+      self.isTurningLeft = false
 	  end
 	  if self.isTurningRight then
-		self.body:applyForce(
-		3*self.rotSpeed*math.cos(self.rot),
-		3*self.rotSpeed*math.sin(self.rot),
-		self.x-2*math.cos(self.rot)*10,
-		self.y-2*math.sin(self.rot)*10)
-		print(self.rot)
+      self.body:applyForce(
+      3*self.rotSpeed*math.cos(self.rot),
+      3*self.rotSpeed*math.sin(self.rot),
+      self.x-2*math.cos(self.rot)*10,
+      self.y-2*math.sin(self.rot)*10)
+      --print(self.rot)
 
-		self.isTurningRight = false
+      self.isTurningRight = false
 	  end
 	  self.rot = self.body:getAngle()
 	  self.x,self.y = self.body:getPosition()

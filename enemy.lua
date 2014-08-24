@@ -11,6 +11,7 @@ function Enemy:__init(x, y, gfx, world, realWorld)
   self.gfx = gfx
   self.size = 32
   self.energy = 100
+  self.realWorld = realWorld
   
   self.body = love.physics.newBody(world, x, y, 'dynamic')
   self.shape = love.physics.newRectangleShape(self.size, self.size)
@@ -39,13 +40,14 @@ function Enemy:moveEnemy(dt)
 	local tVx, tVy = self:calcPath(self.x, self.y, tX, tY, self.shape)
 	self.body:applyForce(tVx*self.movementForce, tVy*self.movementForce)
 	if getDistance(self.x, self.y, tX, tY) < 500 then
-	  self.shoot(tVx, tVy)
+	  self:shoot(tVx, tVy)
 	end
   end
 end
 
 function Enemy:shoot(tX, tY)
-  print("pew pew") --TODO !!!
+  --print("pew pew") --TODO !!!
+  self.realWorld:addEnemyShot(self, tX, tY)
 end
 
 -- this function must return a normalized vector that indicates the direction this object should move towards
