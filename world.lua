@@ -26,7 +26,7 @@ function World:__init(width, height)
   
   self.physWorld = Physics:new()
   
-  self:generateObjects(5, 10)
+  self:generateObjects(1, 2)
 
   self.player = Vehicle:new(self.physWorld.pWorld, startPoint[1], startPoint[2], 10, 10, nil)
   
