@@ -10,12 +10,14 @@ function Enemy:__init(x, y, gfx, world, realWorld)
   self.y = y
   self.gfx = gfx
   self.size = 32
+  self.energy = 100
   
   self.body = love.physics.newBody(world, x, y, 'dynamic')
   self.shape = love.physics.newRectangleShape(self.size, self.size)
   --self.shape = love.physics.newCircleShape(self.size)
   self.fixture = love.physics.newFixture(self.body, self.shape, 15)
   self.fixture:setUserData({["name"] = "enemy", ["reference"] = self, ["world"] = realWorld})
+  self.fixture:setFilterData(PHYSICS_CATEGORY_ENEMY, PHYSICS_MASK_ENEMY, PHYSICS_GROUP_ENEMY)
   self.body:setLinearDamping(2)
   self.body:setAngularDamping(1)
 end
@@ -80,4 +82,20 @@ function Enemy:draw()
   love.graphics.draw(self.gfx, self.x - self.width/2, self.y - self.height/2)
   
   love.graphics.setColor(255, 255, 255, 255)
+end
+
+function Enemy:hit()
+  self.energy = self.energy - 10
+  if self.energy <= 0 then
+    return true
+  end
+  return false
+end
+
+function Enemy:kill()
+  self.energy = 0
+end
+
+function Enemy:destroy()
+  self.body:destroy()
 end

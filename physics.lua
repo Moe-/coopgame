@@ -14,9 +14,9 @@ end
 
 function Physics:update(dt)
   self.pWorld:update(dt)
-  for i,v in pairs(self.pObjects) do
-    v:update(dt)
-  end
+  --for i,v in pairs(self.pObjects) do
+  --  v:update(dt)
+  --end
 end
 
 function Physics:addObject(physObject)
@@ -41,7 +41,18 @@ function beginContact(a, b, coll)
           obj = objA
         end
         
-        --shot.world:removeShot(shot)
+        shot.world:removeShot(shot.reference)
+        if obj.name == "destroyable" then
+          obj.world:destroyDestroyable(obj.reference)
+        elseif obj.name == "enemy" then
+          obj.world:hitEnemy(obj.reference)
+        end
+      end
+      
+      if (objA.name == "vehicle" and objB.name == "enemy") then
+        objB.world:runOver(objA.reference, objB.reference)
+      elseif (objB.name == "vehicle" and objA.name == "enemy") then
+        objB.world:runOver(objB.reference, objA.reference)
       end
     end
   end

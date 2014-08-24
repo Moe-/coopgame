@@ -35,7 +35,25 @@ function World:__init(width, height)
   
   self.physWorld = Physics:new()
   
-  self:generateObjects(1, 2)
+-- TODO: Fix level boundaries
+--  self.body = love.physics.newBody(self.physWorld.pWorld, 0, 0, 'static')
+--  local shape = love.physics.newEdgeShape( 0, 0, width, 0)
+--  local fixture = love.physics.newFixture(self.body, shape, 15)
+--  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+--  
+--  shape = love.physics.newEdgeShape(width, 0, width, height)
+--  fixture = love.physics.newFixture(self.body, shape, 15)
+--  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+
+--  shape = love.physics.newEdgeShape( 0, 0, 0, height)
+--  fixture = love.physics.newFixture(self.body, shape, 15)
+--  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+--  
+--  shape = love.physics.newEdgeShape( 0, height, width, height)
+--  fixture = love.physics.newFixture(self.body, shape, 15)
+--  fixture:setUserData({["name"] = "boundary", ["reference"] = self, ["world"] = self})
+  
+  self:generateObjects(5, 5)
 
   self.fractions["green"] = Fraction:new(love.graphics.newImage("gfx/green_fraction.png"))
   self.fractions["red"] = Fraction:new(love.graphics.newImage("gfx/red_fraction.png"))
@@ -120,13 +138,7 @@ function World:update(dt)
 	end
   end
   
---  for i,v in pairs(self.shots) do
---    v[1] = v[1] + 20 * dt * v[3]
---    v[2] = v[2] + 20 * dt * v[4]
---    if v[1] < 0 or v[1] > self.width or v[2] < 0 or v[2] > self.height then
---      self.shots[i] = nil
---    end
---  end
+  self:updateShots()
   
   if love.mouse.isDown("l") and self.nextMouseEvent <= 0 then
     self.nextMouseEvent = 0.02
@@ -145,6 +157,7 @@ function World:update(dt)
     
     local shape = love.physics.newCircleShape(2)
     local fixture = love.physics.newFixture(body, shape, 50)
+    fixture:setFilterData(PHYSICS_CATEGORY_SHOT, PHYSICS_MASK_SHOT, PHYSICS_GROUP_SHOT)
     fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self})
   end
 
@@ -172,10 +185,50 @@ function World:draw()
   for i,v in pairs(self.shots) do
     local x, y = v:getPosition()
     local dx, dy = v:getLinearVelocity()
-    love.graphics.line(x, y, x + dx, y + dy)
+    love.graphics.line(x, y, x + 0.25 * dx, y + 0.25 * dy)
   end
   
   self.player:draw()
 
   self.camera:unsetCamera()
+end
+
+function World:removeShot(shot)
+  removeFromList(self.shots, shot)
+  --for i, v in pairs(self.shots) do
+--    if v == shot then
+--      self.shots[i] = nil
+--      break
+--    end
+--  end
+  shot:destroy()
+end
+
+function World:updateShots()
+  for i, v in pairs(self.shots) do
+    local x, y = v:getPosition()
+    if x < 0 or x > self.width or y < 0 or y > self.height then
+      self.shots[i] = nil
+      v:destroy()
+    end
+  end
+end
+
+function World:destroyDestroyable(destroyable)
+  destroyable:destroy()
+  removeFromList(self.destroyables, destroyable)
+end
+
+function World:hitEnemy(enemy)
+  local dead = enemy:hit()
+  if dead then
+    enemy:destroy()
+    removeFromList(self.enemies, enemy)
+  end
+end
+
+function World:runOver(vehicle, enemy)
+  enemy:kill()
+  enemy:destroy()
+  removeFromList(self.enemies, enemy)
 end

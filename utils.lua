@@ -50,3 +50,12 @@ function normalize(x,y)
     return x/l,y/l,l
   end
 end
+
+function removeFromList(list, obj)
+  for i, v in pairs(list) do
+    if v == obj then
+      list[i] = nil
+      break
+    end
+  end
+end

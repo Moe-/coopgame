@@ -14,6 +14,7 @@ function Destroyable:__init(x, y, size, form, world, realWorld)
     self.shape = love.physics.newRectangleShape(size, size)
   end
   self.fixture = love.physics.newFixture(self.body, self.shape, 100)
+  self.fixture:setFilterData(PHYSICS_CATEGORY_DESTROYABLE, PHYSICS_MASK_DESTROYABLE, PHYSICS_GROUP_DESTROYABLE)
   self.fixture:setUserData({["name"] = "destroyable", ["reference"] = self, ["world"] = realWorld})
 end
 
@@ -32,4 +33,8 @@ function Destroyable:draw()
   end
 
   love.graphics.setColor(255, 255, 255, 255)
+end
+
+function Destroyable:destroy()
+  self.body:destroy()
 end

@@ -89,7 +89,7 @@ function MainMenu:__init()
 		gSound:stopMusic("music_menu_theme")
 		gSound:playMusic("music_main_theme", nil)
 
-		gScreen = World:new(800, 500)
+		gScreen = World:new(2048, 2048)
 	end
 
 	self.quitbutton = MMButton:new("Beenden", self.font, 0, 0)
