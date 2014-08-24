@@ -1,5 +1,6 @@
 require('playercamera')
 require('physics')
+require('playerdriver')
 
 class "World" {
 	width = 10;
@@ -33,6 +34,8 @@ function World:__init(width, height)
   self.physWorld:addObject(self.player)
 
   self.camera = PlayerCamera:new(self.player)
+
+  self.playerdriver = PlayerDriver:new(self.player)
 end
 
 function World:generateObjects(countX, countY)
@@ -84,6 +87,8 @@ function World:generateDestroyableObjects(posx, posy, width, height)
 end
 
 function World:update(dt)
+  self.playerdriver:update(dt)
+
   self.player:update(dt)
   self.physWorld:update(dt)
   for i, v in pairs(self.undestroyables) do
