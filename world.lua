@@ -139,7 +139,7 @@ function World:update(dt)
     table.insert(self.shots, body)
     body:setBullet(true)
     body:setLinearDamping(0)
-	dx1, dy1 = normalize(dx,dy)
+	  local dx1, dy1 = normalize(dx,dy)
     body:setLinearVelocity(70 * dx1, 70 * dy1)
     
     local shape = love.physics.newCircleShape(2)
@@ -218,4 +218,18 @@ function World:runOver(vehicle, enemy)
   enemy:kill()
   enemy:destroy()
   removeFromList(self.enemies, enemy)
+end
+
+function World:addEnemyShot(enemy, tx, ty)
+  local body = love.physics.newBody( self.physWorld.pWorld, enemy.x, enemy.y, 'dynamic')
+  table.insert(self.shots, body)
+  body:setBullet(true)
+  body:setLinearDamping(0)
+  local dx1, dy1 = normalize(tx,ty)
+  body:setLinearVelocity(70 * dx1, 70 * dy1)
+  
+  local shape = love.physics.newCircleShape(2)
+  local fixture = love.physics.newFixture(body, shape, 50)
+  fixture:setFilterData(PHYSICS_CATEGORY_SHOT_ENEMY, PHYSICS_MASK_SHOT_ENEMY, PHYSICS_GROUP_SHOT_ENEMY)
+  fixture:setUserData({["name"] = "shot", ["reference"] = body, ["world"] = self})
 end

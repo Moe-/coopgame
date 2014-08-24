@@ -29,7 +29,6 @@ function beginContact(a, b, coll)
     local objB = b:getUserData()
   
     if objA ~= nil and objB ~= nil and not (objA.name == "shot" and objB.name == "shot") then
-      print("Contact start", objA.name, objB.name)
       if objA.name == "shot" or objB.name == "shot" then
         local shot = nil
         local obj = nil
@@ -59,34 +58,13 @@ function beginContact(a, b, coll)
 end
 
 function Physics:endContact(a, b, coll)
-  if a ~= nil and b ~= nil then
-    local objA = a:getUserData()
-    local objB = b:getUserData()
-    
-    if objA ~= nil and objB ~= nil and not (objA.name == "shot" and objB.name == "shot") then
-      print("Contact end", objA.name, objB.name)
-    end
-  end
+  --do nothing for now
 end
 
 function Physics:preSolve(a, b, coll)
-  if a ~= nil and b ~= nil then
-  local objA = a:getUserData()
-  local objB = b:getUserData()
-
-    if objA ~= nil and objB ~= nil and not (objA.name == "shot" and objB.name == "shot") then
-      print("preSolve", objA.name, objB.name)
-    end
-  end
+  --do nothing for now
 end
 
 function Physics:postSolve(a, b, coll, normalimpulse1, tangentimpulse1, normalimpulse2, tangentimpulse2)
-  if a ~= nil and b ~= nil then
-    local objA = a:getUserData()
-    local objB = b:getUserData()
-
-    if objA ~= nil and objB ~= nil and not (objA.name == "shot" and objB.name == "shot") then
-      print("postSolve", objA.name, objB.name)
-    end
-  end
+  --do nothing for now
 end
