@@ -23,13 +23,17 @@ class "World" {
   gameWon = false;
   shaderTime = 0;
   shaderDir = 1;
+  
+  gamerunning = false;
 
   gSound = Sound:new()
 }
 
 function World:__init(width, height)
-	self.width = width
+  self.width = width
   self.height = height
+
+  self.gamerunning = true
   
   self.bulletSpeed = 400
   self.backgroundImg = love.graphics.newImage('gfx/background.png')
@@ -42,7 +46,6 @@ function World:__init(width, height)
   
   self.physWorld = Physics:new()
   
--- TODO: Fix level boundaries
   self.body = love.physics.newBody(self.physWorld.pWorld, 0, 0, 'static')
   local shape = love.physics.newEdgeShape( 0, 0, width, 0)
   local fixture = love.physics.newFixture(self.body, shape, 15)
@@ -69,8 +72,6 @@ function World:__init(width, height)
   self.fractions["green"] = Fraction:new(love.graphics.newImage("gfx/green_fraction.png"))
   self.fractions["red"] = Fraction:new(love.graphics.newImage("gfx/red_fraction.png"))
 
-  print(self.fractions["red"]:getFlag())
-
   self.player = Vehicle:new(self.physWorld.pWorld, self.startPoint[1], self.startPoint[2], 10, 10, nil, nil, self, self.fractions["green"])
   
   self.physWorld:addObject(self.player)
@@ -80,6 +81,7 @@ function World:__init(width, height)
   self.playerdriver = PlayerDriver:new(self.player)
   
   self:createShaders()
+  self.playerdriver:enableInput()
 end
 
 function World:generateObjects(countX, countY)
@@ -133,6 +135,12 @@ function World:generateDestroyableObjects(posx, posy, width, height)
 end
 
 function World:update(dt)
+  -- all stuff which has to be updated and is not game relevant, like menus,
+  -- has to be putted above this if line
+  if self.gamerunning == false then
+    --return
+  end
+
   self.playerdriver:update(dt)
 
   self.player:update(dt)
@@ -157,7 +165,11 @@ function World:update(dt)
   
   local pposx, pposy = self.player:getPosition()
   if not self.player:isDead() and getDistance(pposx, pposy, self.targetPoint[1], self.targetPoint[2]) < 20 then
-    self.gameWon = true
+    self.gamerunning = false
+	
+	self.playerdriver:disableInput()
+  elseif self.player:isDead() then
+	self.gamerunning = false
   end
   
   self.shaderTime = self.shaderTime + 0.0005 * self.shaderDir * dt
@@ -204,11 +216,11 @@ function World:draw()
 
   self.camera:unsetCamera()
   
-  if self.gameWon then
-    love.graphics.print("Amazing, a winner!", 10, 250, 0, 2, 2)
-  elseif self.player:isDead() then
-    love.graphics.print("Ah, what a looser...", 10, 250, 0, 2, 2)
-  end
+  --if self.gameWon then
+  --  love.graphics.print("Amazing, a winner!", 10, 250, 0, 2, 2)
+  --elseif self.player:isDead() then
+  --  love.graphics.print("Ah, what a looser...", 10, 250, 0, 2, 2)
+  --end
 end
 
 function World:removeShot(shot)
@@ -245,6 +257,10 @@ function World:hitEnemy(enemy, damage)
   end
 end
 
+function World:hitVehicle(vehicle, damage)
+  vehicle:hit(damage)
+end
+
 function World:runOver(vehicle, enemy)
   enemy:kill()
   enemy:destroy()
@@ -257,7 +273,7 @@ function World:addEnemyShot(x, y, rot)
   local shape = love.physics.newCircleShape(2)
   local fixture = love.physics.newFixture(body, shape, 50)
   fixture:setFilterData(PHYSICS_CATEGORY_SHOT_ENEMY, PHYSICS_MASK_SHOT_ENEMY, PHYSICS_GROUP_SHOT_ENEMY)
-  fixture:setUserData({["name"] = "shot", ["damage"] = 50, ["reference"] = body, ["world"] = self, ["cat"] = "enemy"})
+  fixture:setUserData({["name"] = "shot", ["damage"] = 10, ["reference"] = body, ["world"] = self, ["cat"] = "enemy"})
 end
 
 function World:addVehicleShot(x, y, rot)
@@ -267,6 +283,8 @@ function World:addVehicleShot(x, y, rot)
   local fixture = love.physics.newFixture(body, shape, 50)
   fixture:setFilterData(PHYSICS_CATEGORY_SHOT, PHYSICS_MASK_SHOT, PHYSICS_GROUP_SHOT)
   fixture:setUserData({["name"] = "shot", ["damage"] = 50, ["reference"] = body, ["world"] = self, ["cat"] = "vehicle"})
+  
+  gSound:playSound('vehicle_shoot_0'..love.math.random(2)+1, 1, x, y, 0, true)
 end
 
 function World:createShotBody(x, y, rot)
@@ -280,10 +298,6 @@ function World:createShotBody(x, y, rot)
 	body:setLinearVelocity(dx1, dy1)
   
 	return body
-end
-
-function World:hitVehicle(vehicle)
-  vehicle:hit()
 end
 
 function World:collideWallVehicle(wall, vehicle, coll)

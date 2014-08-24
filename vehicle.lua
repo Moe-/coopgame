@@ -157,8 +157,8 @@ function Vehicle:getPosition()
   return self.body:getPosition()
 end
 
-function Vehicle:hit()
-  self.energy = self.energy - 10
+function Vehicle:hit(damage)
+  self.energy = self.energy - damage
 end
 
 function Vehicle:isDead()
