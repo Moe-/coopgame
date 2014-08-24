@@ -16,19 +16,19 @@ class "Vehicle" {
   isBraking = false;
   isTurningLeft = false;
   isTurningRight = false;
-
+  vel = 12500;
   driver = nil;
 }
 
 function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed, realWorld)
-	self.x = x
+  self.x = x
   self.y = y
   -- physics:
   self.body = love.physics.newBody(physWorld, x, y, pType or "dynamic")
   self.body:setAngle(3*math.pi/2)
-  self.damping = damping or 1
-  self.weight = weight or 10
-  self.rotSpeed = rotSpeed or 1
+  self.damping = damping or 1.5
+  self.weight = weight or 100
+  self.rotSpeed = rotSpeed or 1.5
   self.shape = pShape or love.physics.newRectangleShape(0,0,50,100)
   self.fixture = pFixture or love.physics.newFixture(self.body, self.shape, self.weight)
   self.fixture:setUserData({["name"] = "vehicle", ["reference"] = self, ["world"] = realWorld})
@@ -40,7 +40,7 @@ function Vehicle:__init(physWorld, x, y, damping, weight, pType, rotSpeed, realW
   self.vehicle = love.graphics.newImage('gfx/player.png')
   self.tower = love.graphics.newImage('gfx/tower.png')
   -- NOTE: This is length of the tower from the rotation center
-  -- when the tower image is cahnged, this value has to be adjust
+  -- when the tower image is changed, this value has to be adjusted
   self.towerLength = 128 - (64/2)
   
   self.offsetGunX = (self.vehicle:getWidth() - self.tower:getWidth()) / 2
@@ -52,48 +52,39 @@ function Vehicle:update(dt)
   if self.udt>0.01 then
     self.udt = 0
 	  if self.isAccelerating then
-		local vel = 10000
-		self.body:applyForce(-math.sin(self.rot)*vel,math.cos(self.rot)*vel)
-		
+		self.body:applyForce(-math.sin(self.rot)*self.vel,math.cos(self.rot)*self.vel)
 		self.isAccelerating = false
 	  end
 	  if self.isBraking then
-		local vel = 10000
-		self.body:applyForce(math.sin(self.rot)*vel,-math.cos(self.rot)*vel)
-		
+		self.body:applyForce(math.sin(self.rot)*self.vel,-math.cos(self.rot)*self.vel)
 		self.isBraking = false
 	  end
 	  if self.isTurningLeft then
 		self.body:applyForce(
-		-3*self.rotSpeed*math.cos(self.rot), --*math.pi/4,
-		-3*self.rotSpeed*math.sin(self.rot), --*math.pi/4,
+		-3*self.rotSpeed*math.cos(self.rot),
+		-3*self.rotSpeed*math.sin(self.rot),
 		self.x-math.cos(self.rot)*10,
 		self.y-math.sin(self.rot)*10)
-		--self.body:applyTorque(self.rotSpeed*0.1)
-		--self.rot = self.body:getAngle()
 		print(self.rot)
 
 		self.isTurningLeft = false
 	  end
 	  if self.isTurningRight then
 		self.body:applyForce(
-		3*self.rotSpeed*math.cos(self.rot), --*math.pi/4,
-		3*self.rotSpeed*math.sin(self.rot), --*math.pi/4,
+		3*self.rotSpeed*math.cos(self.rot),
+		3*self.rotSpeed*math.sin(self.rot),
 		self.x-2*math.cos(self.rot)*10,
 		self.y-2*math.sin(self.rot)*10)
-		--self.body:applyTorque(-1*self.rotSpeed*0.1)
 		print(self.rot)
 
 		self.isTurningRight = false
 	  end
 	  self.rot = self.body:getAngle()
-	  --print(math.sin(self.rot)*1000 .. ", " .. math.cos(self.rot)*1000)
 	  self.x,self.y = self.body:getPosition()
-	  --print(self.x..","..self.y)
 	end
 end
 
--- all that function below are per-frame (had to be called every frame)
+-- all the functions below are per-frame (have to be called every frame)
 function Vehicle:accelerate()
 	self.isAccelerating = true
 end
