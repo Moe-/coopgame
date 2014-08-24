@@ -39,8 +39,10 @@ function Enemy:moveEnemy(dt)
     local tX, tY = self.target.body:getPosition()
 	local tVx, tVy = self:calcPath(self.x, self.y, tX, tY, self.shape)
 	self.body:applyForce(tVx*self.movementForce, tVy*self.movementForce)
-	if getDistance(self.x, self.y, tX, tY) < 500 then
-	  self:shoot(tVx, tVy)
+	if getDistance(self.x, self.y, tX, tY) < 550 then
+	  local tSx = tX-self.x
+	  local tSy = tY-self.y
+	  self:shoot(tSx, tSy)
 	end
   end
 end
