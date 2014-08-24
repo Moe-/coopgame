@@ -98,7 +98,7 @@ function World:__init(width, height)
   
   self:createShaders()
   for i = 1, self.particleSystemCount do
-    self.particles[i] = Particle:new(50, 50, 255, 255, 255, 0.5)
+    self.particles[i] = Particle:new(50, 50, 255, 255, 128, 2.5)
   end
   
   self.playerdriver:enableInput()
@@ -199,15 +199,6 @@ function World:update(dt)
     if self.playDeadSound then
       gSound:playSound('vehicle_explode_0'..love.math.random(2)+1, 1, x, y, 0, true)
       self.playDeadSound = false
-      
-      for i = 1, self.particleSystemCount do
-        if not self.particles[i]:isActive() then
-          local x, y = self.player:getPosition()
-          self.particles[i]:setPosition(x, y)
-          self.particles[i]:reset()
-          break
-        end
-      end
     end
     self.gamerunning = false
 
@@ -314,6 +305,14 @@ end
 
 function World:hitVehicle(vehicle, damage)
   vehicle:hit(damage)
+  for i = 1, self.particleSystemCount do
+    if not self.particles[i]:isActive() then
+      local x, y = self.player:getPosition()
+      self.particles[i]:setPosition(x, y)
+      self.particles[i]:reset()
+      break
+    end
+  end
 end
 
 function World:runOver(vehicle, enemy)
