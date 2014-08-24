@@ -1,4 +1,3 @@
-require('utils')
 require('sound')
 
 class "MMButton" {
@@ -76,6 +75,7 @@ function MainMenu:__init()
 
 	gSound = Sound:new()
 	gSound:playMusic("music_menu_theme", nil)
+
 	self.logoimg = love.graphics.newImage("gfx/logo.png")
 
 	self.playbutton = MMButton:new("Spielen", gFont, 0, 0)
@@ -86,7 +86,7 @@ function MainMenu:__init()
 		gSound:stopMusic("music_menu_theme")
 		gSound:playMusic("music_main_theme", nil)
 
-		gScreen = World:new(2048, 2048)
+		gScreen = createWorld()
 	end
 
 	self.quitbutton = MMButton:new("Beenden", gFont, 0, 0)

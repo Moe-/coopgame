@@ -4,6 +4,7 @@ require('playerdriver')
 require('fraction')
 require('sound')
 require('countdown')
+require('gameovermenu')
 
 class "World" {
   width = 10;
@@ -182,9 +183,12 @@ function World:update(dt)
   local pposx, pposy = self.player:getPosition()
   if self.player:isDead() then
 	self.gamerunning = false
+	
+	self.overlay = GameoverMenu:new(self, false)
   elseif getDistance(pposx, pposy, self.targetPoint[1], self.targetPoint[2]) < 20 then
     self.gamerunning = false
 	
+	self.overlay = GameoverMenu:new(self, true)
 	self.playerdriver:disableInput()
   end
   

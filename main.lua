@@ -14,6 +14,10 @@ function createMainMenu()
 	gScreen = MainMenu:new()
 end
 
+function createWorld()
+	return World:new(2048, 2048)
+end
+
 function love.load()
     createMainMenu()
 	math.randomseed( os.time() )
